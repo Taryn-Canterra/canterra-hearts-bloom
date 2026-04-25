@@ -42,11 +42,19 @@ export default function DealDetail() {
     const [{ data: d }, { data: ci }, { data: n }] = await Promise.all([
       supabase.from("deals").select("*").eq("id", id).maybeSingle(),
       supabase.from("deal_checklist_items").select("*").eq("deal_id", id).order("stage").order("sort_order"),
-      supabase.from("deal_notes").select("*, profiles!inner(display_name)").eq("deal_id", id).order("created_at", { ascending: false }),
+      supabase.from("deal_notes").select("*").eq("deal_id", id).order("created_at", { ascending: false }),
     ]);
     setDeal(d);
     setItems(ci ?? []);
-    setNotes(n ?? []);
+
+    // Fetch author display names separately (no FK between deal_notes.author_id and profiles)
+    const authorIds = Array.from(new Set((n ?? []).map((x) => x.author_id)));
+    let profileMap: Record<string, string> = {};
+    if (authorIds.length) {
+      const { data: profs } = await supabase.from("profiles").select("user_id,display_name").in("user_id", authorIds);
+      profileMap = Object.fromEntries((profs ?? []).map((p) => [p.user_id, p.display_name ?? "Agent"]));
+    }
+    setNotes((n ?? []).map((x) => ({ ...x, author_name: profileMap[x.author_id] ?? "Agent" })));
     setLoading(false);
   };
 
@@ -197,7 +205,7 @@ export default function DealDetail() {
                 <div key={n.id} className="border-l-2 border-primary/30 pl-3 py-1">
                   <p className="text-sm">{n.body}</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {n.profiles?.display_name ?? "Unknown"} · {new Date(n.created_at).toLocaleString()}
+                    {n.author_name} · {new Date(n.created_at).toLocaleString()}
                   </p>
                 </div>
               ))}
