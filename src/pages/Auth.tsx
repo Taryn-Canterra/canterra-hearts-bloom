@@ -26,16 +26,16 @@ export default function Auth() {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setSubmitting(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
+    setSubmitting(false);
     if (error) toast.error(error.message);
     else navigate("/dashboard");
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setSubmitting(true);
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -44,7 +44,7 @@ export default function Auth() {
         data: { display_name: displayName },
       },
     });
-    setLoading(false);
+    setSubmitting(false);
     if (error) toast.error(error.message);
     else toast.success("Account created — signing you in…");
   };
@@ -85,8 +85,8 @@ export default function Auth() {
                     <Label htmlFor="password">Password</Label>
                     <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
                   </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Signing in…" : "Sign in"}
+                  <Button type="submit" className="w-full" disabled={submitting}>
+                    {submitting ? "Signing in…" : "Sign in"}
                   </Button>
                 </form>
               </TabsContent>
@@ -104,8 +104,8 @@ export default function Auth() {
                     <Label htmlFor="password2">Password</Label>
                     <Input id="password2" type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
                   </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Creating…" : "Create account"}
+                  <Button type="submit" className="w-full" disabled={submitting}>
+                    {submitting ? "Creating…" : "Create account"}
                   </Button>
                 </form>
               </TabsContent>
