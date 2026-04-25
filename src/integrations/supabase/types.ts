@@ -14,6 +14,195 @@ export type Database = {
   }
   public: {
     Tables: {
+      deal_checklist_items: {
+        Row: {
+          client_visible: boolean
+          completed: boolean
+          completed_at: string | null
+          completed_by: string | null
+          created_at: string
+          deal_id: string
+          description: string | null
+          id: string
+          label: string
+          sort_order: number
+          stage: Database["public"]["Enums"]["deal_stage"]
+          updated_at: string
+        }
+        Insert: {
+          client_visible?: boolean
+          completed?: boolean
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          deal_id: string
+          description?: string | null
+          id?: string
+          label: string
+          sort_order?: number
+          stage: Database["public"]["Enums"]["deal_stage"]
+          updated_at?: string
+        }
+        Update: {
+          client_visible?: boolean
+          completed?: boolean
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          deal_id?: string
+          description?: string | null
+          id?: string
+          label?: string
+          sort_order?: number
+          stage?: Database["public"]["Enums"]["deal_stage"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_checklist_items_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deal_notes: {
+        Row: {
+          author_id: string
+          body: string
+          created_at: string
+          deal_id: string
+          id: string
+        }
+        Insert: {
+          author_id: string
+          body: string
+          created_at?: string
+          deal_id: string
+          id?: string
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          created_at?: string
+          deal_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_notes_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deals: {
+        Row: {
+          actual_close_date: string | null
+          assigned_to: string
+          client_email: string | null
+          client_name: string
+          client_phone: string | null
+          commission_pct: number | null
+          created_at: string
+          expected_close_date: string | null
+          id: string
+          notes: string | null
+          price: number | null
+          property_address: string | null
+          property_id: string | null
+          side: Database["public"]["Enums"]["deal_side"]
+          source_lead_id: string | null
+          source_lead_type: string | null
+          stage: Database["public"]["Enums"]["deal_stage"]
+          updated_at: string
+        }
+        Insert: {
+          actual_close_date?: string | null
+          assigned_to: string
+          client_email?: string | null
+          client_name: string
+          client_phone?: string | null
+          commission_pct?: number | null
+          created_at?: string
+          expected_close_date?: string | null
+          id?: string
+          notes?: string | null
+          price?: number | null
+          property_address?: string | null
+          property_id?: string | null
+          side: Database["public"]["Enums"]["deal_side"]
+          source_lead_id?: string | null
+          source_lead_type?: string | null
+          stage?: Database["public"]["Enums"]["deal_stage"]
+          updated_at?: string
+        }
+        Update: {
+          actual_close_date?: string | null
+          assigned_to?: string
+          client_email?: string | null
+          client_name?: string
+          client_phone?: string | null
+          commission_pct?: number | null
+          created_at?: string
+          expected_close_date?: string | null
+          id?: string
+          notes?: string | null
+          price?: number | null
+          property_address?: string | null
+          property_id?: string | null
+          side?: Database["public"]["Enums"]["deal_side"]
+          source_lead_id?: string | null
+          source_lead_type?: string | null
+          stage?: Database["public"]["Enums"]["deal_stage"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deals_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_assignments: {
+        Row: {
+          assigned_to: string
+          created_at: string
+          id: string
+          lead_id: string
+          lead_type: string
+          notes: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to: string
+          created_at?: string
+          id?: string
+          lead_id: string
+          lead_type: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string
+          created_at?: string
+          id?: string
+          lead_id?: string
+          lead_type?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       listing_analysis_runs: {
         Row: {
           created_at: string
@@ -54,6 +243,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          brokerage: string | null
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          brokerage?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          brokerage?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       properties: {
         Row: {
@@ -232,15 +457,56 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       analysis_status: "pending" | "analyzing" | "analyzed" | "failed"
+      app_role: "admin" | "agent"
+      deal_side: "buyer" | "seller"
+      deal_stage:
+        | "new_lead"
+        | "qualified"
+        | "property_tour_or_listing_prep"
+        | "offer_drafted_or_listed"
+        | "offer_accepted_under_contract"
+        | "inspection_and_appraisal"
+        | "financing_and_title"
+        | "closing"
+        | "closed_won"
+        | "lost"
+        | "withdrawn"
       listing_status: "active" | "pending" | "sold" | "withdrawn"
     }
     CompositeTypes: {
@@ -370,6 +636,21 @@ export const Constants = {
   public: {
     Enums: {
       analysis_status: ["pending", "analyzing", "analyzed", "failed"],
+      app_role: ["admin", "agent"],
+      deal_side: ["buyer", "seller"],
+      deal_stage: [
+        "new_lead",
+        "qualified",
+        "property_tour_or_listing_prep",
+        "offer_drafted_or_listed",
+        "offer_accepted_under_contract",
+        "inspection_and_appraisal",
+        "financing_and_title",
+        "closing",
+        "closed_won",
+        "lost",
+        "withdrawn",
+      ],
       listing_status: ["active", "pending", "sold", "withdrawn"],
     },
   },

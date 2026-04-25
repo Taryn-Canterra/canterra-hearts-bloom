@@ -28,10 +28,14 @@ export const Header = () => {
           </a>
         </nav>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-            Sign in
+          <Link to="/auth">
+            <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
+              Agent sign in
+            </Button>
+          </Link>
+          <Button size="sm" asChild>
+            <a href="#search">Save searches</a>
           </Button>
-          <Button size="sm">Save searches</Button>
         </div>
       </div>
     </header>
