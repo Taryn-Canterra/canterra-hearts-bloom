@@ -72,7 +72,7 @@ export default function DealDetail() {
   };
 
   const updateStage = async (stage: string) => {
-    await supabase.from("deals").update({ stage }).eq("id", id);
+    await supabase.from("deals").update({ stage: stage as any }).eq("id", id);
     load();
   };
 

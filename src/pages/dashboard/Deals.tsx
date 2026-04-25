@@ -44,7 +44,7 @@ export default function Deals() {
   useEffect(() => { if (user) load(); }, [user, isAdmin]);
 
   const moveStage = async (dealId: string, newStage: string) => {
-    const { error } = await supabase.from("deals").update({ stage: newStage }).eq("id", dealId);
+    const { error } = await supabase.from("deals").update({ stage: newStage as any }).eq("id", dealId);
     if (error) toast.error(error.message);
     else load();
   };
