@@ -4,6 +4,30 @@ import listing3 from "@/assets/listing-3.jpg";
 import listing4 from "@/assets/listing-4.jpg";
 import listing5 from "@/assets/listing-5.jpg";
 import listing6 from "@/assets/listing-6.jpg";
+import galleryBarn from "@/assets/gallery-barn-interior.jpg";
+import galleryArena from "@/assets/gallery-arena.jpg";
+import galleryKitchen from "@/assets/gallery-kitchen.jpg";
+import agentTaryn from "@/assets/agent-taryn.jpg";
+
+export interface Agent {
+  name: string;
+  title: string;
+  brokerage: string;
+  phone: string;
+  email: string;
+  photo: string;
+}
+
+export const DEFAULT_AGENT: Agent = {
+  name: "Taryn King",
+  title: "Land & Ranch Agent Director",
+  brokerage: "Horse & Hearth Group · eXp Realty",
+  phone: "(720) 555-0184",
+  email: "taryn@horseandhearth.com",
+  photo: agentTaryn,
+};
+
+const COMMON_GALLERY = [galleryBarn, galleryArena, galleryKitchen];
 
 export type EquineFeature =
   | "indoor_arena"
@@ -48,12 +72,24 @@ export interface Listing {
   stalls: number;
   paddocks: number;
   image: string;
+  gallery?: string[];
   features: EquineFeature[];
   description: string;
   status: "active" | "pending" | "new";
   daysOnMarket: number;
   aiTags: string[];
+  agent?: Agent;
 }
+
+export const getListing = (id: string) => {
+  const listing = LISTINGS.find((l) => l.id === id);
+  if (!listing) return undefined;
+  return {
+    ...listing,
+    gallery: listing.gallery ?? [listing.image, ...COMMON_GALLERY],
+    agent: listing.agent ?? DEFAULT_AGENT,
+  };
+};
 
 export const LISTINGS: Listing[] = [
   {
