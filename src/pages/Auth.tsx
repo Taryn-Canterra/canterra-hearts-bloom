@@ -11,15 +11,18 @@ import { toast } from "sonner";
 
 export default function Auth() {
   const navigate = useNavigate();
-  const { session } = useAuth();
+  const { session, isClient, isAgent, isAdmin, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (session) navigate("/dashboard", { replace: true });
-  }, [session, navigate]);
+    if (loading || !session) return;
+    // Route based on role; clients land in /portal
+    if (isClient && !isAgent && !isAdmin) navigate("/portal", { replace: true });
+    else navigate("/dashboard", { replace: true });
+  }, [session, isClient, isAgent, isAdmin, loading, navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
