@@ -14,7 +14,170 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      listing_analysis_runs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          latency_ms: number | null
+          model: string
+          property_id: string
+          raw_response: Json | null
+          success: boolean
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          latency_ms?: number | null
+          model: string
+          property_id: string
+          raw_response?: Json | null
+          success: boolean
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          latency_ms?: number | null
+          model?: string
+          property_id?: string
+          raw_response?: Json | null
+          success?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_analysis_runs_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      properties: {
+        Row: {
+          acres: number | null
+          address: string | null
+          ai_tags: string[]
+          analysis_status: Database["public"]["Enums"]["analysis_status"]
+          analyzed_at: string | null
+          baths: number | null
+          beds: number | null
+          brokerage_name: string | null
+          city: string | null
+          county: string | null
+          created_at: string
+          days_on_market: number | null
+          description: string | null
+          equine_confidence: number | null
+          equine_features: string[]
+          equine_reasoning: string | null
+          id: string
+          is_equine: boolean | null
+          latitude: number | null
+          listing_agent_email: string | null
+          listing_agent_name: string | null
+          listing_agent_phone: string | null
+          longitude: number | null
+          mls_number: string | null
+          paddocks: number | null
+          photos: string[]
+          price: number | null
+          primary_photo: string | null
+          property_type: string | null
+          raw_payload: Json | null
+          source: string
+          sqft: number | null
+          stalls: number | null
+          state: string
+          status: Database["public"]["Enums"]["listing_status"]
+          title: string | null
+          updated_at: string
+          zip: string | null
+        }
+        Insert: {
+          acres?: number | null
+          address?: string | null
+          ai_tags?: string[]
+          analysis_status?: Database["public"]["Enums"]["analysis_status"]
+          analyzed_at?: string | null
+          baths?: number | null
+          beds?: number | null
+          brokerage_name?: string | null
+          city?: string | null
+          county?: string | null
+          created_at?: string
+          days_on_market?: number | null
+          description?: string | null
+          equine_confidence?: number | null
+          equine_features?: string[]
+          equine_reasoning?: string | null
+          id?: string
+          is_equine?: boolean | null
+          latitude?: number | null
+          listing_agent_email?: string | null
+          listing_agent_name?: string | null
+          listing_agent_phone?: string | null
+          longitude?: number | null
+          mls_number?: string | null
+          paddocks?: number | null
+          photos?: string[]
+          price?: number | null
+          primary_photo?: string | null
+          property_type?: string | null
+          raw_payload?: Json | null
+          source?: string
+          sqft?: number | null
+          stalls?: number | null
+          state?: string
+          status?: Database["public"]["Enums"]["listing_status"]
+          title?: string | null
+          updated_at?: string
+          zip?: string | null
+        }
+        Update: {
+          acres?: number | null
+          address?: string | null
+          ai_tags?: string[]
+          analysis_status?: Database["public"]["Enums"]["analysis_status"]
+          analyzed_at?: string | null
+          baths?: number | null
+          beds?: number | null
+          brokerage_name?: string | null
+          city?: string | null
+          county?: string | null
+          created_at?: string
+          days_on_market?: number | null
+          description?: string | null
+          equine_confidence?: number | null
+          equine_features?: string[]
+          equine_reasoning?: string | null
+          id?: string
+          is_equine?: boolean | null
+          latitude?: number | null
+          listing_agent_email?: string | null
+          listing_agent_name?: string | null
+          listing_agent_phone?: string | null
+          longitude?: number | null
+          mls_number?: string | null
+          paddocks?: number | null
+          photos?: string[]
+          price?: number | null
+          primary_photo?: string | null
+          property_type?: string | null
+          raw_payload?: Json | null
+          source?: string
+          sqft?: number | null
+          stalls?: number | null
+          state?: string
+          status?: Database["public"]["Enums"]["listing_status"]
+          title?: string | null
+          updated_at?: string
+          zip?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +186,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      analysis_status: "pending" | "analyzing" | "analyzed" | "failed"
+      listing_status: "active" | "pending" | "sold" | "withdrawn"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +314,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      analysis_status: ["pending", "analyzing", "analyzed", "failed"],
+      listing_status: ["active", "pending", "sold", "withdrawn"],
+    },
   },
 } as const

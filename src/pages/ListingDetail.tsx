@@ -17,7 +17,8 @@ import {
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { getListing, FEATURE_LABELS } from "@/data/listings";
+import { FEATURE_LABELS } from "@/data/listings";
+import { useProperty } from "@/hooks/useProperties";
 import { toast } from "sonner";
 
 const formatPrice = (n: number) =>
@@ -29,8 +30,20 @@ const formatPrice = (n: number) =>
 
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const listing = id ? getListing(id) : undefined;
+  const { listing, loading } = useProperty(id);
   const [activeImage, setActiveImage] = useState(0);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container py-32 text-center">
+          <p className="text-muted-foreground">Loading listing…</p>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!listing) {
     return (

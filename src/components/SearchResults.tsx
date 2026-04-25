@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { LISTINGS } from "@/data/listings";
+import { Sparkles } from "lucide-react";
+import { useProperties } from "@/hooks/useProperties";
 import { FilterSidebar, type FilterState } from "./FilterSidebar";
 import { ListingCard } from "./ListingCard";
 
@@ -13,9 +14,10 @@ const DEFAULT_FILTERS: FilterState = {
 export const SearchResults = () => {
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
   const [sort, setSort] = useState<"newest" | "price_low" | "price_high" | "acres">("newest");
+  const { listings, loading, usingMock } = useProperties();
 
   const filtered = useMemo(() => {
-    const result = LISTINGS.filter(
+    const result = listings.filter(
       (l) =>
         l.acres >= filters.minAcres &&
         l.stalls >= filters.minStalls &&
@@ -34,7 +36,7 @@ export const SearchResults = () => {
           return a.daysOnMarket - b.daysOnMarket;
       }
     });
-  }, [filters, sort]);
+  }, [filters, sort, listings]);
 
   return (
     <section id="search" className="bg-gradient-warm py-16 md:py-24">
@@ -51,6 +53,12 @@ export const SearchResults = () => {
               Every active MLS listing — pulled via IDX, photo-tagged by AI for the features that
               matter to equine buyers.
             </p>
+            {usingMock && (
+              <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent">
+                <Sparkles className="h-3 w-3" />
+                Showing seed data — connect IDX feed to load live MLS
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm">
             <span className="text-muted-foreground">Sort</span>
@@ -74,7 +82,16 @@ export const SearchResults = () => {
             resultCount={filtered.length}
           />
           <div>
-            {filtered.length === 0 ? (
+            {loading ? (
+              <div className="grid gap-6 sm:grid-cols-2">
+                {[0, 1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="aspect-[4/3] animate-pulse rounded-2xl bg-card/60"
+                  />
+                ))}
+              </div>
+            ) : filtered.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-border bg-card/60 p-16 text-center">
                 <p className="font-display text-xl text-primary">No properties match yet.</p>
                 <p className="mt-2 text-sm text-muted-foreground">
