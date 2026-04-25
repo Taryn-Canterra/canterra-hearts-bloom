@@ -15,11 +15,13 @@ export const CtaSaveSearch = () => {
     setStatus("saving");
 
     const criteria = searchFiltersStore.get();
-    const { error } = await supabase.from("saved_searches").insert({
-      email: email.trim(),
-      criteria: criteria as unknown as Record<string, unknown>,
-      source: "cta_save_search",
-    });
+    const { error } = await supabase.from("saved_searches").insert([
+      {
+        email: email.trim(),
+        criteria: criteria as unknown as Record<string, unknown>,
+        source: "cta_save_search",
+      },
+    ]);
 
     if (error) {
       setStatus("idle");
