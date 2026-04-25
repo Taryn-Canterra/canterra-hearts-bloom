@@ -107,6 +107,6 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
           )}
         </div>
       </div>
-    </article>
+    </Link>
   );
 };
