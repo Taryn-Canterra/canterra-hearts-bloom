@@ -10,8 +10,18 @@ import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { ArrowLeft, Check, Circle, Download, FileUp, Trash2 } from "lucide-react";
+import { resolveDisplayStage } from "@/lib/dealDeadlines";
+import { StageProgress } from "@/components/portal/StageProgress";
+import { DeadlineBanner } from "@/components/portal/DeadlineBanner";
+import { DeadlineList } from "@/components/portal/DeadlineList";
+import { LenderTracker } from "@/components/portal/LenderTracker";
+import { OffersPanel } from "@/components/portal/OffersPanel";
+import { SellerListingActivity } from "@/components/portal/SellerListingActivity";
+import { PriceReductionPanel } from "@/components/portal/PriceReductionPanel";
+import { EsignPanel } from "@/components/portal/EsignPanel";
+import { PostClosePanel } from "@/components/portal/PostClosePanel";
 
-const STAGES = [
+const STAGE_GROUPS = [
   { key: "new_lead", label: "New Lead" },
   { key: "qualified", label: "Qualified" },
   { key: "property_tour_or_listing_prep", label: "Tour / Listing Prep" },
@@ -47,7 +57,6 @@ export default function PortalDeal() {
     setItems(ci ?? []);
     setMessages(msgs ?? []);
     setDocs(dd ?? []);
-
     if (d?.property_id) {
       const { data: p } = await supabase.from("properties").select("*").eq("id", d.property_id).maybeSingle();
       setProperty(p);
@@ -57,13 +66,24 @@ export default function PortalDeal() {
 
   useEffect(() => { load(); }, [id]);
 
-  // Realtime messages
+  // Realtime: messages
   useEffect(() => {
     if (!id) return;
     const channel = supabase
       .channel(`deal-${id}-msgs`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "deal_messages", filter: `deal_id=eq.${id}` },
         (payload) => setMessages((m) => [...m, payload.new]))
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [id]);
+
+  // Realtime: deal updates (deadline changes etc.)
+  useEffect(() => {
+    if (!id) return;
+    const channel = supabase
+      .channel(`deal-${id}-row`)
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "deals", filter: `id=eq.${id}` },
+        (payload) => setDeal(payload.new))
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [id]);
@@ -80,7 +100,6 @@ export default function PortalDeal() {
     const path = `${id}/${Date.now()}-${file.name}`;
     const { error: upErr } = await supabase.storage.from("deal-documents").upload(path, file);
     if (upErr) { toast.error(upErr.message); return; }
-
     const { error: dbErr } = await supabase.from("deal_documents").insert({
       deal_id: id, uploaded_by: user.id, filename: file.name,
       storage_path: path, mime_type: file.type, size_bytes: file.size, visible_to_client: true,
@@ -106,10 +125,12 @@ export default function PortalDeal() {
   if (loading) return <ClientPortalLayout><p>Loading…</p></ClientPortalLayout>;
   if (!deal) return <ClientPortalLayout><p>Transaction not found.</p></ClientPortalLayout>;
 
+  const isSeller = deal.side === "seller";
   const totalVisible = items.length;
   const completed = items.filter((i) => i.completed).length;
   const pct = totalVisible ? Math.round((completed / totalVisible) * 100) : 0;
-  const currentStageIdx = STAGES.findIndex((s) => s.key === deal.stage);
+  const displayStage = resolveDisplayStage(deal.stage, deal);
+  const isPostClose = displayStage === "post_close";
 
   return (
     <ClientPortalLayout>
@@ -118,51 +139,48 @@ export default function PortalDeal() {
           <ArrowLeft className="mr-2 h-4 w-4" /> All transactions
         </Link>
 
+        {/* Urgent action banner */}
+        <DeadlineBanner deal={deal} />
+
         {/* Header */}
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <Badge variant={deal.side === "buyer" ? "default" : "outline"}>{deal.side}</Badge>
+              <Badge variant={isSeller ? "outline" : "default"}>{deal.side}</Badge>
+              <Badge variant="secondary">{pct}% complete</Badge>
             </div>
             <CardTitle className="font-display text-2xl">{deal.property_address ?? deal.client_name}</CardTitle>
-            {deal.price && <p className="text-muted-foreground mt-1">${Number(deal.price).toLocaleString()}</p>}
+            {(deal.list_price || deal.price) && (
+              <p className="text-muted-foreground mt-1">
+                ${Number(deal.list_price ?? deal.price).toLocaleString()}
+              </p>
+            )}
           </CardHeader>
           <CardContent>
-            <div className="flex items-center justify-between text-sm mb-2">
-              <span className="font-medium">Overall progress</span>
-              <span className="text-muted-foreground">{completed} / {totalVisible} steps complete</span>
-            </div>
-            <Progress value={pct} />
+            <Progress value={pct} className="mb-4" />
+            <StageProgress currentStage={displayStage} />
           </CardContent>
         </Card>
 
-        {/* Stage tracker */}
-        <Card>
-          <CardHeader><CardTitle className="text-base">Where you are</CardTitle></CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {STAGES.map((s, idx) => {
-                const done = currentStageIdx > idx;
-                const current = currentStageIdx === idx;
-                return (
-                  <div
-                    key={s.key}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm border ${
-                      current ? "bg-primary text-primary-foreground border-primary" :
-                      done ? "bg-secondary text-secondary-foreground border-secondary" :
-                      "bg-muted/30 text-muted-foreground border-border"
-                    }`}
-                  >
-                    {done ? <Check className="h-3 w-3" /> : <Circle className="h-3 w-3" />}
-                    {s.label}
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Seller-specific listing activity */}
+        {isSeller && !isPostClose && <SellerListingActivity deal={deal} />}
 
-        {/* Property */}
+        {/* Offers (both sides) */}
+        <OffersPanel deal={deal} />
+
+        {/* Price reduction proposals (seller only) */}
+        {isSeller && <PriceReductionPanel deal={deal} />}
+
+        {/* Lender tracker (buyer only) */}
+        {!isSeller && <LenderTracker deal={deal} />}
+
+        {/* Key dates / countdown */}
+        <DeadlineList deal={deal} />
+
+        {/* E-sign */}
+        <EsignPanel deal={deal} />
+
+        {/* Property details */}
         {property && (
           <Card>
             <CardHeader><CardTitle className="text-base">Property details</CardTitle></CardHeader>
@@ -182,6 +200,19 @@ export default function PortalDeal() {
           </Card>
         )}
 
+        {/* Net proceeds (seller) */}
+        {isSeller && deal.net_proceeds_estimate && (
+          <Card>
+            <CardHeader><CardTitle className="text-base">Estimated net proceeds</CardTitle></CardHeader>
+            <CardContent>
+              <p className="font-display text-3xl font-semibold text-primary">
+                ${Number(deal.net_proceeds_estimate).toLocaleString()}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">Updated by your agent. Final figure on the closing statement.</p>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Checklist */}
         <Card>
           <CardHeader>
@@ -189,7 +220,7 @@ export default function PortalDeal() {
             <p className="text-sm text-muted-foreground">Steps your agent is tracking on your behalf.</p>
           </CardHeader>
           <CardContent className="space-y-5">
-            {STAGES.map((s) => {
+            {STAGE_GROUPS.map((s) => {
               const stageItems = items.filter((i) => i.stage === s.key);
               if (stageItems.length === 0) return null;
               return (
@@ -216,12 +247,8 @@ export default function PortalDeal() {
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-base">Documents</CardTitle>
             <div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                className="hidden"
-                onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadFile(f); e.target.value = ""; }}
-              />
+              <input ref={fileInputRef} type="file" className="hidden"
+                onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadFile(f); e.target.value = ""; }} />
               <Button size="sm" variant="outline" onClick={() => fileInputRef.current?.click()}>
                 <FileUp className="mr-2 h-4 w-4" /> Upload
               </Button>
@@ -248,6 +275,9 @@ export default function PortalDeal() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Post-close hub */}
+        {isPostClose && <PostClosePanel deal={deal} />}
 
         {/* Messages */}
         <Card>

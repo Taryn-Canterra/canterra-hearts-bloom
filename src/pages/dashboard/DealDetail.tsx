@@ -13,6 +13,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Trash2, ArrowLeft } from "lucide-react";
 import { DealClientPanel } from "@/components/dashboard/DealClientPanel";
+import { DealKeyDatesEditor } from "@/components/dashboard/DealKeyDatesEditor";
+import {
+  ShowingsManager, OffersManager, LenderMilestonesManager,
+  PriceReductionManager, EsignManager, VendorsManager, RemindersManager,
+} from "@/components/dashboard/DealTransactionPanels";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const STAGES = [
   { key: "new_lead", label: "New Lead" },
@@ -193,28 +199,55 @@ export default function DealDetail() {
           </CardContent>
         </Card>
 
-        <DealClientPanel dealId={id!} />
+        <Tabs defaultValue="transaction" className="w-full">
+          <TabsList className="grid grid-cols-2 md:grid-cols-4 w-full">
+            <TabsTrigger value="transaction">Transaction</TabsTrigger>
+            <TabsTrigger value="parties">Client & messaging</TabsTrigger>
+            <TabsTrigger value="postclose">Post-close</TabsTrigger>
+            <TabsTrigger value="notes">Internal notes</TabsTrigger>
+          </TabsList>
 
-        <Card>
-          <CardHeader><CardTitle>Internal notes</CardTitle></CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex gap-2">
-              <Textarea rows={2} placeholder="Add a note…" value={newNote} onChange={(e) => setNewNote(e.target.value)} />
-              <Button onClick={addNote}>Add</Button>
-            </div>
-            <div className="space-y-2">
-              {notes.length === 0 && <p className="text-sm text-muted-foreground">No notes yet.</p>}
-              {notes.map((n) => (
-                <div key={n.id} className="border-l-2 border-primary/30 pl-3 py-1">
-                  <p className="text-sm">{n.body}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {n.author_name} · {new Date(n.created_at).toLocaleString()}
-                  </p>
+          <TabsContent value="transaction" className="space-y-6 mt-4">
+            <DealKeyDatesEditor deal={deal} onSaved={load} />
+            {deal.side === "seller" && <ShowingsManager dealId={id!} />}
+            <OffersManager dealId={id!} isSeller={deal.side === "seller"} />
+            {deal.side === "seller" && <PriceReductionManager deal={deal} onSaved={load} />}
+            {deal.side === "buyer" && <LenderMilestonesManager dealId={id!} />}
+            <EsignManager dealId={id!} />
+          </TabsContent>
+
+          <TabsContent value="parties" className="space-y-6 mt-4">
+            <DealClientPanel dealId={id!} />
+          </TabsContent>
+
+          <TabsContent value="postclose" className="space-y-6 mt-4">
+            <VendorsManager dealId={id!} />
+            <RemindersManager dealId={id!} />
+          </TabsContent>
+
+          <TabsContent value="notes" className="space-y-4 mt-4">
+            <Card>
+              <CardHeader><CardTitle>Internal notes</CardTitle></CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex gap-2">
+                  <Textarea rows={2} placeholder="Add a note…" value={newNote} onChange={(e) => setNewNote(e.target.value)} />
+                  <Button onClick={addNote}>Add</Button>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                <div className="space-y-2">
+                  {notes.length === 0 && <p className="text-sm text-muted-foreground">No notes yet.</p>}
+                  {notes.map((n) => (
+                    <div key={n.id} className="border-l-2 border-primary/30 pl-3 py-1">
+                      <p className="text-sm">{n.body}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {n.author_name} · {new Date(n.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </DashboardLayout>
   );

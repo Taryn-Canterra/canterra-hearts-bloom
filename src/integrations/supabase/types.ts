@@ -108,6 +108,33 @@ export type Database = {
           },
         ]
       }
+      deal_deadline_reminders_sent: {
+        Row: {
+          deadline_field: string
+          deadline_value: string
+          deal_id: string
+          id: string
+          reminder_window: string
+          sent_at: string
+        }
+        Insert: {
+          deadline_field: string
+          deadline_value: string
+          deal_id: string
+          id?: string
+          reminder_window: string
+          sent_at?: string
+        }
+        Update: {
+          deadline_field?: string
+          deadline_value?: string
+          deal_id?: string
+          id?: string
+          reminder_window?: string
+          sent_at?: string
+        }
+        Relationships: []
+      }
       deal_documents: {
         Row: {
           category: string | null
@@ -154,6 +181,156 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      deal_esign_requests: {
+        Row: {
+          created_at: string
+          created_by: string
+          deal_id: string
+          document_name: string
+          external_envelope_id: string | null
+          external_provider: string | null
+          id: string
+          sent_at: string
+          sent_to_email: string
+          signed_at: string | null
+          signing_url: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          deal_id: string
+          document_name: string
+          external_envelope_id?: string | null
+          external_provider?: string | null
+          id?: string
+          sent_at?: string
+          sent_to_email: string
+          signed_at?: string | null
+          signing_url?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          deal_id?: string
+          document_name?: string
+          external_envelope_id?: string | null
+          external_provider?: string | null
+          id?: string
+          sent_at?: string
+          sent_to_email?: string
+          signed_at?: string | null
+          signing_url?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      deal_lender_milestones: {
+        Row: {
+          created_at: string
+          deal_id: string
+          id: string
+          milestone: string
+          notes: string | null
+          reached_at: string | null
+          sort_order: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          deal_id: string
+          id?: string
+          milestone: string
+          notes?: string | null
+          reached_at?: string | null
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          deal_id?: string
+          id?: string
+          milestone?: string
+          notes?: string | null
+          reached_at?: string | null
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      deal_listing_metrics: {
+        Row: {
+          created_at: string
+          deal_id: string
+          id: string
+          inquiries: number
+          recorded_on: string
+          saves: number
+          showing_requests: number
+          views: number
+        }
+        Insert: {
+          created_at?: string
+          deal_id: string
+          id?: string
+          inquiries?: number
+          recorded_on?: string
+          saves?: number
+          showing_requests?: number
+          views?: number
+        }
+        Update: {
+          created_at?: string
+          deal_id?: string
+          id?: string
+          inquiries?: number
+          recorded_on?: string
+          saves?: number
+          showing_requests?: number
+          views?: number
+        }
+        Relationships: []
+      }
+      deal_maintenance_reminders: {
+        Row: {
+          category: string | null
+          completed: boolean
+          created_at: string
+          deal_id: string
+          description: string | null
+          due_on: string | null
+          id: string
+          recurrence: string | null
+          title: string
+        }
+        Insert: {
+          category?: string | null
+          completed?: boolean
+          created_at?: string
+          deal_id: string
+          description?: string | null
+          due_on?: string | null
+          id?: string
+          recurrence?: string | null
+          title: string
+        }
+        Update: {
+          category?: string | null
+          completed?: boolean
+          created_at?: string
+          deal_id?: string
+          description?: string | null
+          due_on?: string | null
+          id?: string
+          recurrence?: string | null
+          title?: string
+        }
+        Relationships: []
       }
       deal_messages: {
         Row: {
@@ -222,65 +399,293 @@ export type Database = {
           },
         ]
       }
+      deal_offers: {
+        Row: {
+          agent_recommendation: string | null
+          buyer_or_offering_party: string | null
+          contingencies: string | null
+          created_at: string
+          created_by: string
+          deal_id: string
+          direction: string
+          earnest_money: number | null
+          financing_type: string | null
+          id: string
+          offer_price: number
+          proposed_close_date: string | null
+          status: string
+          submitted_at: string
+        }
+        Insert: {
+          agent_recommendation?: string | null
+          buyer_or_offering_party?: string | null
+          contingencies?: string | null
+          created_at?: string
+          created_by: string
+          deal_id: string
+          direction: string
+          earnest_money?: number | null
+          financing_type?: string | null
+          id?: string
+          offer_price: number
+          proposed_close_date?: string | null
+          status?: string
+          submitted_at?: string
+        }
+        Update: {
+          agent_recommendation?: string | null
+          buyer_or_offering_party?: string | null
+          contingencies?: string | null
+          created_at?: string
+          created_by?: string
+          deal_id?: string
+          direction?: string
+          earnest_money?: number | null
+          financing_type?: string | null
+          id?: string
+          offer_price?: number
+          proposed_close_date?: string | null
+          status?: string
+          submitted_at?: string
+        }
+        Relationships: []
+      }
+      deal_price_reductions: {
+        Row: {
+          applied_at: string | null
+          created_at: string
+          deal_id: string
+          id: string
+          prior_price: number
+          proposed_by: string
+          proposed_price: number
+          reasoning: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+        }
+        Insert: {
+          applied_at?: string | null
+          created_at?: string
+          deal_id: string
+          id?: string
+          prior_price: number
+          proposed_by: string
+          proposed_price: number
+          reasoning?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Update: {
+          applied_at?: string | null
+          created_at?: string
+          deal_id?: string
+          id?: string
+          prior_price?: number
+          proposed_by?: string
+          proposed_price?: number
+          reasoning?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      deal_showings: {
+        Row: {
+          buyer_agent_brokerage: string | null
+          buyer_agent_name: string | null
+          created_at: string
+          created_by: string
+          deal_id: string
+          feedback: string | null
+          id: string
+          scheduled_at: string
+          status: string
+        }
+        Insert: {
+          buyer_agent_brokerage?: string | null
+          buyer_agent_name?: string | null
+          created_at?: string
+          created_by: string
+          deal_id: string
+          feedback?: string | null
+          id?: string
+          scheduled_at: string
+          status?: string
+        }
+        Update: {
+          buyer_agent_brokerage?: string | null
+          buyer_agent_name?: string | null
+          created_at?: string
+          created_by?: string
+          deal_id?: string
+          feedback?: string | null
+          id?: string
+          scheduled_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      deal_vendors: {
+        Row: {
+          added_by: string
+          category: string
+          created_at: string
+          deal_id: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+        }
+        Insert: {
+          added_by: string
+          category: string
+          created_at?: string
+          deal_id: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+        }
+        Update: {
+          added_by?: string
+          category?: string
+          created_at?: string
+          deal_id?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+        }
+        Relationships: []
+      }
       deals: {
         Row: {
           actual_close_date: string | null
+          appraisal_deadline: string | null
           assigned_to: string
           client_email: string | null
           client_name: string
           client_phone: string | null
           commission_pct: number | null
+          contract_date: string | null
           created_at: string
+          earnest_money_amount: number | null
+          earnest_money_due: string | null
           expected_close_date: string | null
+          final_walkthrough_date: string | null
+          financing_contingency_deadline: string | null
           id: string
+          inspection_deadline: string | null
+          inspection_objection_deadline: string | null
+          lender_contact_email: string | null
+          lender_contact_name: string | null
+          lender_contact_phone: string | null
+          lender_name: string | null
+          list_price: number | null
+          listed_at: string | null
+          net_proceeds_estimate: number | null
           notes: string | null
+          possession_date: string | null
           price: number | null
+          price_history: Json
           property_address: string | null
           property_id: string | null
           side: Database["public"]["Enums"]["deal_side"]
           source_lead_id: string | null
           source_lead_type: string | null
           stage: Database["public"]["Enums"]["deal_stage"]
+          title_company_name: string | null
+          title_contact_email: string | null
+          title_contact_name: string | null
+          title_objection_deadline: string | null
           updated_at: string
         }
         Insert: {
           actual_close_date?: string | null
+          appraisal_deadline?: string | null
           assigned_to: string
           client_email?: string | null
           client_name: string
           client_phone?: string | null
           commission_pct?: number | null
+          contract_date?: string | null
           created_at?: string
+          earnest_money_amount?: number | null
+          earnest_money_due?: string | null
           expected_close_date?: string | null
+          final_walkthrough_date?: string | null
+          financing_contingency_deadline?: string | null
           id?: string
+          inspection_deadline?: string | null
+          inspection_objection_deadline?: string | null
+          lender_contact_email?: string | null
+          lender_contact_name?: string | null
+          lender_contact_phone?: string | null
+          lender_name?: string | null
+          list_price?: number | null
+          listed_at?: string | null
+          net_proceeds_estimate?: number | null
           notes?: string | null
+          possession_date?: string | null
           price?: number | null
+          price_history?: Json
           property_address?: string | null
           property_id?: string | null
           side: Database["public"]["Enums"]["deal_side"]
           source_lead_id?: string | null
           source_lead_type?: string | null
           stage?: Database["public"]["Enums"]["deal_stage"]
+          title_company_name?: string | null
+          title_contact_email?: string | null
+          title_contact_name?: string | null
+          title_objection_deadline?: string | null
           updated_at?: string
         }
         Update: {
           actual_close_date?: string | null
+          appraisal_deadline?: string | null
           assigned_to?: string
           client_email?: string | null
           client_name?: string
           client_phone?: string | null
           commission_pct?: number | null
+          contract_date?: string | null
           created_at?: string
+          earnest_money_amount?: number | null
+          earnest_money_due?: string | null
           expected_close_date?: string | null
+          final_walkthrough_date?: string | null
+          financing_contingency_deadline?: string | null
           id?: string
+          inspection_deadline?: string | null
+          inspection_objection_deadline?: string | null
+          lender_contact_email?: string | null
+          lender_contact_name?: string | null
+          lender_contact_phone?: string | null
+          lender_name?: string | null
+          list_price?: number | null
+          listed_at?: string | null
+          net_proceeds_estimate?: number | null
           notes?: string | null
+          possession_date?: string | null
           price?: number | null
+          price_history?: Json
           property_address?: string | null
           property_id?: string | null
           side?: Database["public"]["Enums"]["deal_side"]
           source_lead_id?: string | null
           source_lead_type?: string | null
           stage?: Database["public"]["Enums"]["deal_stage"]
+          title_company_name?: string | null
+          title_contact_email?: string | null
+          title_contact_name?: string | null
+          title_objection_deadline?: string | null
           updated_at?: string
         }
         Relationships: [
