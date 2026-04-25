@@ -193,6 +193,8 @@ export default function DealDetail() {
           </CardContent>
         </Card>
 
+        <DealClientPanel dealId={id!} />
+
         <Card>
           <CardHeader><CardTitle>Internal notes</CardTitle></CardHeader>
           <CardContent className="space-y-4">

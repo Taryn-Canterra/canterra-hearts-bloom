@@ -34,6 +34,8 @@ const App = () => (
             <Route path="/dashboard/deals" element={<Deals />} />
             <Route path="/dashboard/deals/new" element={<NewDeal />} />
             <Route path="/dashboard/deals/:id" element={<DealDetail />} />
+            <Route path="/portal" element={<PortalHome />} />
+            <Route path="/portal/deal/:id" element={<PortalDeal />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
