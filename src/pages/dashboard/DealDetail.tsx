@@ -13,6 +13,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Trash2, ArrowLeft } from "lucide-react";
 import { DealClientPanel } from "@/components/dashboard/DealClientPanel";
+import { DealKeyDatesEditor } from "@/components/dashboard/DealKeyDatesEditor";
+import {
+  ShowingsManager, OffersManager, LenderMilestonesManager,
+  PriceReductionManager, EsignManager, VendorsManager, RemindersManager,
+} from "@/components/dashboard/DealTransactionPanels";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const STAGES = [
   { key: "new_lead", label: "New Lead" },
