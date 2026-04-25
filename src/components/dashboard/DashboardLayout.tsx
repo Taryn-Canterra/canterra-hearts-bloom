@@ -25,7 +25,7 @@ const items = [
 ];
 
 export const DashboardLayout = ({ children }: { children: ReactNode }) => {
-  const { session, loading, user, isAdmin, signOut } = useAuth();
+  const { session, loading, user, isAdmin, isAgent, isClient, signOut } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -33,6 +33,10 @@ export const DashboardLayout = ({ children }: { children: ReactNode }) => {
   }
   if (!session) {
     return <Navigate to="/auth" state={{ from: location }} replace />;
+  }
+  // Clients without agent/admin role get redirected to their portal
+  if (isClient && !isAgent && !isAdmin) {
+    return <Navigate to="/portal" replace />;
   }
 
   return (

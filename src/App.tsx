@@ -13,6 +13,8 @@ import Leads from "./pages/dashboard/Leads.tsx";
 import Deals from "./pages/dashboard/Deals.tsx";
 import NewDeal from "./pages/dashboard/NewDeal.tsx";
 import DealDetail from "./pages/dashboard/DealDetail.tsx";
+import PortalHome from "./pages/portal/PortalHome.tsx";
+import PortalDeal from "./pages/portal/PortalDeal.tsx";
 
 const queryClient = new QueryClient();
 

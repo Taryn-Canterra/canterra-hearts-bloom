@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Trash2, ArrowLeft } from "lucide-react";
+import { DealClientPanel } from "@/components/dashboard/DealClientPanel";
 
 const STAGES = [
   { key: "new_lead", label: "New Lead" },
