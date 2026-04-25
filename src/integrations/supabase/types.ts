@@ -178,6 +178,60 @@ export type Database = {
         }
         Relationships: []
       }
+      property_inquiries: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          name: string
+          phone: string | null
+          property_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          name: string
+          phone?: string | null
+          property_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          name?: string
+          phone?: string | null
+          property_id?: string
+        }
+        Relationships: []
+      }
+      saved_searches: {
+        Row: {
+          created_at: string
+          criteria: Json
+          email: string
+          id: string
+          source: string
+        }
+        Insert: {
+          created_at?: string
+          criteria?: Json
+          email: string
+          id?: string
+          source?: string
+        }
+        Update: {
+          created_at?: string
+          criteria?: Json
+          email?: string
+          id?: string
+          source?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
