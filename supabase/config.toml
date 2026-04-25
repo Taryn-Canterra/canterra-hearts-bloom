@@ -1,1 +1,7 @@
 project_id = "ggcbfranmgoymvdpycdr"
+
+[functions.analyze-listing]
+verify_jwt = false
+
+[functions.ingest-listings]
+verify_jwt = false
