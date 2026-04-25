@@ -18,7 +18,7 @@ export const CtaSaveSearch = () => {
     const { error } = await supabase.from("saved_searches").insert([
       {
         email: email.trim(),
-        criteria: criteria as unknown as Record<string, unknown>,
+        criteria: criteria as unknown as never,
         source: "cta_save_search",
       },
     ]);
