@@ -13,6 +13,20 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        display: ['Fraunces', 'Georgia', 'serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      backgroundImage: {
+        'gradient-hero': 'var(--gradient-hero)',
+        'gradient-forest': 'var(--gradient-forest)',
+        'gradient-warm': 'var(--gradient-warm)',
+      },
+      boxShadow: {
+        card: 'var(--shadow-card)',
+        elevated: 'var(--shadow-elevated)',
+        soft: 'var(--shadow-soft)',
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -22,6 +36,7 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          glow: "hsl(var(--primary-glow))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
