@@ -3,33 +3,23 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { FEATURE_LABELS, type EquineFeature } from "@/data/listings";
 import { SlidersHorizontal } from "lucide-react";
-
-export interface FilterState {
-  minAcres: number;
-  minStalls: number;
-  priceMax: number;
-  features: EquineFeature[];
-}
+import { searchFiltersStore, useSearchFilters } from "@/hooks/useSearchFilters";
 
 interface FilterSidebarProps {
-  filters: FilterState;
-  onChange: (filters: FilterState) => void;
   resultCount: number;
 }
 
 const ALL_FEATURES = Object.keys(FEATURE_LABELS) as EquineFeature[];
 
-export const FilterSidebar = ({ filters, onChange, resultCount }: FilterSidebarProps) => {
+export const FilterSidebar = ({ resultCount }: FilterSidebarProps) => {
+  const filters = useSearchFilters();
+
   const toggleFeature = (f: EquineFeature) => {
     const has = filters.features.includes(f);
-    onChange({
-      ...filters,
+    searchFiltersStore.set({
       features: has ? filters.features.filter((x) => x !== f) : [...filters.features, f],
     });
   };
-
-  const reset = () =>
-    onChange({ minAcres: 0, minStalls: 0, priceMax: 5_000_000, features: [] });
 
   return (
     <aside className="space-y-7 rounded-2xl border border-border/70 bg-card p-6 shadow-soft lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
@@ -39,7 +29,7 @@ export const FilterSidebar = ({ filters, onChange, resultCount }: FilterSidebarP
           Refine
         </div>
         <button
-          onClick={reset}
+          onClick={() => searchFiltersStore.reset()}
           className="text-xs font-medium uppercase tracking-wider text-accent hover:underline"
         >
           Reset
@@ -53,7 +43,7 @@ export const FilterSidebar = ({ filters, onChange, resultCount }: FilterSidebarP
         </div>
         <Slider
           value={[filters.minAcres]}
-          onValueChange={([v]) => onChange({ ...filters, minAcres: v })}
+          onValueChange={([v]) => searchFiltersStore.set({ minAcres: v })}
           min={0}
           max={50}
           step={1}
@@ -67,7 +57,7 @@ export const FilterSidebar = ({ filters, onChange, resultCount }: FilterSidebarP
         </div>
         <Slider
           value={[filters.minStalls]}
-          onValueChange={([v]) => onChange({ ...filters, minStalls: v })}
+          onValueChange={([v]) => searchFiltersStore.set({ minStalls: v })}
           min={0}
           max={12}
           step={1}
@@ -83,7 +73,7 @@ export const FilterSidebar = ({ filters, onChange, resultCount }: FilterSidebarP
         </div>
         <Slider
           value={[filters.priceMax]}
-          onValueChange={([v]) => onChange({ ...filters, priceMax: v })}
+          onValueChange={([v]) => searchFiltersStore.set({ priceMax: v })}
           min={500_000}
           max={5_000_000}
           step={50_000}
