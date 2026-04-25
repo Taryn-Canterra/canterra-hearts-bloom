@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Bed, Bath, Square, Sparkles } from "lucide-react";
 import type { Listing } from "@/data/listings";
 import { FEATURE_LABELS } from "@/data/listings";
@@ -23,7 +24,10 @@ interface ListingCardProps {
 
 export const ListingCard = ({ listing }: ListingCardProps) => {
   return (
-    <article className="group overflow-hidden rounded-2xl border border-border/70 bg-card shadow-card transition-smooth hover:-translate-y-1 hover:shadow-elevated">
+    <Link
+      to={`/listing/${listing.id}`}
+      className="group block overflow-hidden rounded-2xl border border-border/70 bg-card shadow-card transition-smooth hover:-translate-y-1 hover:shadow-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    >
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         <img
           src={listing.image}
