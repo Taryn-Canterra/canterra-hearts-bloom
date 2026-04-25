@@ -72,12 +72,24 @@ export interface Listing {
   stalls: number;
   paddocks: number;
   image: string;
+  gallery?: string[];
   features: EquineFeature[];
   description: string;
   status: "active" | "pending" | "new";
   daysOnMarket: number;
   aiTags: string[];
+  agent?: Agent;
 }
+
+export const getListing = (id: string) => {
+  const listing = LISTINGS.find((l) => l.id === id);
+  if (!listing) return undefined;
+  return {
+    ...listing,
+    gallery: listing.gallery ?? [listing.image, ...COMMON_GALLERY],
+    agent: listing.agent ?? DEFAULT_AGENT,
+  };
+};
 
 export const LISTINGS: Listing[] = [
   {
