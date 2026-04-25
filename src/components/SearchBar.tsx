@@ -1,7 +1,10 @@
 import { Search, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { searchFiltersStore, useSearchFilters } from "@/hooks/useSearchFilters";
 
 export const SearchBar = () => {
+  const filters = useSearchFilters();
+
   return (
     <form
       onSubmit={(e) => {
@@ -17,7 +20,8 @@ export const SearchBar = () => {
             Location
           </div>
           <input
-            defaultValue="Colorado"
+            value={filters.location}
+            onChange={(e) => searchFiltersStore.set({ location: e.target.value })}
             className="w-full bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground"
             placeholder="City, county, or ZIP"
           />
@@ -29,9 +33,11 @@ export const SearchBar = () => {
             Min acres
           </div>
           <select
-            defaultValue="5"
+            value={filters.minAcres}
+            onChange={(e) => searchFiltersStore.set({ minAcres: Number(e.target.value) })}
             className="w-full bg-transparent text-sm font-medium text-foreground outline-none"
           >
+            <option value="0">Any acres</option>
             <option value="2">2+ acres</option>
             <option value="5">5+ acres</option>
             <option value="10">10+ acres</option>
@@ -46,9 +52,11 @@ export const SearchBar = () => {
             Stalls
           </div>
           <select
-            defaultValue="4"
+            value={filters.minStalls}
+            onChange={(e) => searchFiltersStore.set({ minStalls: Number(e.target.value) })}
             className="w-full bg-transparent text-sm font-medium text-foreground outline-none"
           >
+            <option value="0">Any stalls</option>
             <option value="2">2+ stalls</option>
             <option value="4">4+ stalls</option>
             <option value="6">6+ stalls</option>

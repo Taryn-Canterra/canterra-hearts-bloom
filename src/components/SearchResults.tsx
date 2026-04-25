@@ -1,29 +1,28 @@
 import { useMemo, useState } from "react";
 import { Sparkles } from "lucide-react";
 import { useProperties } from "@/hooks/useProperties";
-import { FilterSidebar, type FilterState } from "./FilterSidebar";
+import { useSearchFilters } from "@/hooks/useSearchFilters";
+import { FilterSidebar } from "./FilterSidebar";
 import { ListingCard } from "./ListingCard";
 
-const DEFAULT_FILTERS: FilterState = {
-  minAcres: 0,
-  minStalls: 0,
-  priceMax: 5_000_000,
-  features: [],
-};
-
 export const SearchResults = () => {
-  const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
+  const filters = useSearchFilters();
   const [sort, setSort] = useState<"newest" | "price_low" | "price_high" | "acres">("newest");
   const { listings, loading, usingMock } = useProperties();
 
   const filtered = useMemo(() => {
-    const result = listings.filter(
-      (l) =>
-        l.acres >= filters.minAcres &&
-        l.stalls >= filters.minStalls &&
-        l.price <= filters.priceMax &&
-        filters.features.every((f) => l.features.includes(f)),
-    );
+    const loc = filters.location.trim().toLowerCase();
+    const result = listings.filter((l) => {
+      if (l.acres < filters.minAcres) return false;
+      if (l.stalls < filters.minStalls) return false;
+      if (l.price > filters.priceMax) return false;
+      if (!filters.features.every((f) => l.features.includes(f))) return false;
+      if (loc) {
+        const hay = `${l.city} ${l.county} ${l.address}`.toLowerCase();
+        if (!hay.includes(loc)) return false;
+      }
+      return true;
+    });
     return [...result].sort((a, b) => {
       switch (sort) {
         case "price_low":
@@ -76,11 +75,7 @@ export const SearchResults = () => {
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
-          <FilterSidebar
-            filters={filters}
-            onChange={setFilters}
-            resultCount={filtered.length}
-          />
+          <FilterSidebar resultCount={filtered.length} />
           <div>
             {loading ? (
               <div className="grid gap-6 sm:grid-cols-2">

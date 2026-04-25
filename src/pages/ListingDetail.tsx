@@ -19,6 +19,7 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { FEATURE_LABELS } from "@/data/listings";
 import { useProperty } from "@/hooks/useProperties";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const formatPrice = (n: number) =>
@@ -32,6 +33,7 @@ const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { listing, loading } = useProperty(id);
   const [activeImage, setActiveImage] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
 
   if (loading) {
     return (
@@ -61,12 +63,30 @@ const ListingDetail = () => {
     );
   }
 
-  const handleContact = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleContact = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!id) return;
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    setSubmitting(true);
+    const { error } = await supabase.from("property_inquiries").insert([
+      {
+        property_id: id,
+        name: String(data.get("name") ?? "").trim(),
+        email: String(data.get("email") ?? "").trim(),
+        phone: (String(data.get("phone") ?? "").trim() || null) as string | null,
+        message: (String(data.get("message") ?? "").trim() || null) as string | null,
+      },
+    ]);
+    setSubmitting(false);
+    if (error) {
+      toast.error("Couldn't send your message", { description: error.message });
+      return;
+    }
     toast.success("Message sent", {
       description: `${listing.agent.name} will reach out within the hour.`,
     });
-    e.currentTarget.reset();
+    form.reset();
   };
 
   return (
@@ -315,29 +335,33 @@ const ListingDetail = () => {
                   <form onSubmit={handleContact} className="space-y-3">
                     <input
                       required
+                      name="name"
                       placeholder="Your name"
                       className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary"
                     />
                     <input
                       required
+                      name="email"
                       type="email"
                       placeholder="Email"
                       className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary"
                     />
                     <input
+                      name="phone"
                       type="tel"
                       placeholder="Phone (optional)"
                       className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary"
                     />
                     <textarea
                       required
+                      name="message"
                       rows={3}
                       defaultValue={`I'd love to schedule a showing of ${listing.title}.`}
                       className="w-full resize-none rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none transition-colors focus:border-primary"
                     />
-                    <Button type="submit" className="w-full" size="lg">
+                    <Button type="submit" className="w-full" size="lg" disabled={submitting}>
                       <Calendar className="mr-2 h-4 w-4" />
-                      Request a showing
+                      {submitting ? "Sending…" : "Request a showing"}
                     </Button>
                   </form>
                   <p className="text-center text-[11px] text-muted-foreground">
