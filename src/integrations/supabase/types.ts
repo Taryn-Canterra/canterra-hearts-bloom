@@ -67,6 +67,129 @@ export type Database = {
           },
         ]
       }
+      deal_clients: {
+        Row: {
+          accepted_at: string | null
+          client_email: string
+          client_user_id: string | null
+          created_at: string
+          deal_id: string
+          id: string
+          invited_at: string
+          invited_by: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          client_email: string
+          client_user_id?: string | null
+          created_at?: string
+          deal_id: string
+          id?: string
+          invited_at?: string
+          invited_by: string
+        }
+        Update: {
+          accepted_at?: string | null
+          client_email?: string
+          client_user_id?: string | null
+          created_at?: string
+          deal_id?: string
+          id?: string
+          invited_at?: string
+          invited_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_clients_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deal_documents: {
+        Row: {
+          category: string | null
+          created_at: string
+          deal_id: string
+          filename: string
+          id: string
+          mime_type: string | null
+          size_bytes: number | null
+          storage_path: string
+          uploaded_by: string
+          visible_to_client: boolean
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          deal_id: string
+          filename: string
+          id?: string
+          mime_type?: string | null
+          size_bytes?: number | null
+          storage_path: string
+          uploaded_by: string
+          visible_to_client?: boolean
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          deal_id?: string
+          filename?: string
+          id?: string
+          mime_type?: string | null
+          size_bytes?: number | null
+          storage_path?: string
+          uploaded_by?: string
+          visible_to_client?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_documents_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deal_messages: {
+        Row: {
+          body: string
+          created_at: string
+          deal_id: string
+          id: string
+          read_at: string | null
+          sender_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          deal_id: string
+          id?: string
+          read_at?: string | null
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          deal_id?: string
+          id?: string
+          read_at?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_messages_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deal_notes: {
         Row: {
           author_id: string
@@ -490,10 +613,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_client_on_deal: {
+        Args: { _deal_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       analysis_status: "pending" | "analyzing" | "analyzed" | "failed"
-      app_role: "admin" | "agent"
+      app_role: "admin" | "agent" | "client"
       deal_side: "buyer" | "seller"
       deal_stage:
         | "new_lead"
@@ -636,7 +763,7 @@ export const Constants = {
   public: {
     Enums: {
       analysis_status: ["pending", "analyzing", "analyzed", "failed"],
-      app_role: ["admin", "agent"],
+      app_role: ["admin", "agent", "client"],
       deal_side: ["buyer", "seller"],
       deal_stage: [
         "new_lead",

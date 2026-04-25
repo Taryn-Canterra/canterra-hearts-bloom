@@ -13,6 +13,8 @@ import Leads from "./pages/dashboard/Leads.tsx";
 import Deals from "./pages/dashboard/Deals.tsx";
 import NewDeal from "./pages/dashboard/NewDeal.tsx";
 import DealDetail from "./pages/dashboard/DealDetail.tsx";
+import PortalHome from "./pages/portal/PortalHome.tsx";
+import PortalDeal from "./pages/portal/PortalDeal.tsx";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +34,8 @@ const App = () => (
             <Route path="/dashboard/deals" element={<Deals />} />
             <Route path="/dashboard/deals/new" element={<NewDeal />} />
             <Route path="/dashboard/deals/:id" element={<DealDetail />} />
+            <Route path="/portal" element={<PortalHome />} />
+            <Route path="/portal/deal/:id" element={<PortalDeal />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
