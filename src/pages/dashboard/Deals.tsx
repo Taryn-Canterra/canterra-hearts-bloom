@@ -1,13 +1,25 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
+
+const STAGE_FILTERS: Record<string, { label: string; stages: string[] }> = {
+  open: {
+    label: "Open deals",
+    stages: ["new_lead", "qualified", "property_tour_or_listing_prep", "offer_drafted_or_listed"],
+  },
+  under_contract: {
+    label: "Under contract",
+    stages: ["offer_accepted_under_contract", "inspection_and_appraisal", "financing_and_title", "closing"],
+  },
+  closed_won: { label: "Closed won", stages: ["closed_won"] },
+};
 
 const STAGES: { key: string; label: string }[] = [
   { key: "new_lead", label: "New Lead" },
@@ -31,6 +43,14 @@ export default function Deals() {
   const { user, isAdmin } = useAuth();
   const [deals, setDeals] = useState<Deal[]>([]);
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filter = searchParams.get("filter");
+  const activeFilter = filter && STAGE_FILTERS[filter] ? STAGE_FILTERS[filter] : null;
+
+  const visibleStages = useMemo(
+    () => (activeFilter ? STAGES.filter((s) => activeFilter.stages.includes(s.key)) : STAGES),
+    [activeFilter]
+  );
 
   const load = async () => {
     const q = isAdmin
@@ -55,6 +75,12 @@ export default function Deals() {
     if (id) moveStage(id, stage);
   };
 
+  const clearFilter = () => {
+    const next = new URLSearchParams(searchParams);
+    next.delete("filter");
+    setSearchParams(next);
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -68,9 +94,25 @@ export default function Deals() {
           </Button>
         </div>
 
+        {activeFilter && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Filtered by:</span>
+            <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1">
+              {activeFilter.label}
+              <button
+                onClick={clearFilter}
+                className="ml-1 rounded-sm hover:bg-muted-foreground/20 p-0.5"
+                aria-label="Clear filter"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          </div>
+        )}
+
         <div className="overflow-x-auto pb-4">
           <div className="flex gap-3 min-w-max">
-            {STAGES.map((stage) => {
+            {visibleStages.map((stage) => {
               const stageDeals = deals.filter((d) => d.stage === stage.key);
               return (
                 <div
