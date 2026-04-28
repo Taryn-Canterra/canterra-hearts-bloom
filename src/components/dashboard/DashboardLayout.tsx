@@ -25,6 +25,7 @@ const items = [
   { title: "Deals", url: "/dashboard/deals", icon: Briefcase },
   { title: "AI tools", url: "/dashboard/ai-tools", icon: Sparkles },
   { title: "Vendors", url: "/vendors", icon: Store },
+  { title: "Routing rules", url: "/dashboard/routing", icon: Settings, adminOnly: true },
 ];
 
 export const DashboardLayout = ({ children }: { children: ReactNode }) => {
@@ -55,16 +56,18 @@ export const DashboardLayout = ({ children }: { children: ReactNode }) => {
               <SidebarGroupLabel>Main</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {items.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild>
-                        <NavLink to={item.url} end={item.end} className="hover:bg-muted/50" activeClassName="bg-muted text-primary font-medium">
-                          <item.icon className="mr-2 h-4 w-4" />
-                          <span>{item.title}</span>
-                        </NavLink>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
+                  {items
+                    .filter((item) => !item.adminOnly || isAdmin)
+                    .map((item) => (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton asChild>
+                          <NavLink to={item.url} end={item.end} className="hover:bg-muted/50" activeClassName="bg-muted text-primary font-medium">
+                            <item.icon className="mr-2 h-4 w-4" />
+                            <span>{item.title}</span>
+                          </NavLink>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>

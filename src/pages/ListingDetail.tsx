@@ -15,6 +15,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { Header } from "@/components/Header";
+import { ClaimListingDialog } from "@/components/ClaimListingDialog";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { FEATURE_LABELS } from "@/data/listings";
@@ -417,6 +418,12 @@ const ListingDetail = () => {
                   <p className="text-center text-[11px] text-muted-foreground">
                     Typical response time: under 1 hour
                   </p>
+                  <div className="text-center pt-2 border-t">
+                    <ClaimListingDialog
+                      propertyId={listing.id}
+                      propertyAddress={listing.address}
+                    />
+                  </div>
                 </div>
               </div>
             </aside>
