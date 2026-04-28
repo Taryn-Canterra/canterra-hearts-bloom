@@ -36,6 +36,56 @@ export default function NewDeal() {
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
 
+  const [pastClients, setPastClients] = useState<ClientSuggestion[]>([]);
+  const [showSuggest, setShowSuggest] = useState(false);
+  const nameWrapRef = useRef<HTMLDivElement>(null);
+
+  // Load distinct past clients for this agent (for autofill)
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase
+        .from("deals")
+        .select("client_name, client_email, client_phone, side, property_address, created_at")
+        .eq("assigned_to", user.id)
+        .order("created_at", { ascending: false })
+        .limit(500);
+      const seen = new Set<string>();
+      const uniq: ClientSuggestion[] = [];
+      (data ?? []).forEach((d: any) => {
+        const key = (d.client_name ?? "").trim().toLowerCase() + "|" + (d.client_email ?? "").toLowerCase();
+        if (!d.client_name || seen.has(key)) return;
+        seen.add(key);
+        uniq.push(d);
+      });
+      setPastClients(uniq);
+    })();
+  }, [user]);
+
+  useEffect(() => {
+    const onDoc = (e: MouseEvent) => {
+      if (nameWrapRef.current && !nameWrapRef.current.contains(e.target as Node)) setShowSuggest(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, []);
+
+  const matches = useMemo(() => {
+    const q = clientName.trim().toLowerCase();
+    if (!q) return [];
+    return pastClients
+      .filter((c) => c.client_name.toLowerCase().includes(q) || (c.client_email ?? "").toLowerCase().includes(q))
+      .slice(0, 6);
+  }, [clientName, pastClients]);
+
+  const pickSuggestion = (c: ClientSuggestion) => {
+    setClientName(c.client_name);
+    setClientEmail(c.client_email ?? "");
+    setClientPhone(c.client_phone ?? "");
+    setShowSuggest(false);
+    toast.success(`Autofilled from existing ${c.side} deal`);
+  };
+
   // Pre-fill from inquiry if converting
   useEffect(() => {
     if (!inquiryId) return;
