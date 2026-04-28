@@ -14,6 +14,89 @@ export type Database = {
   }
   public: {
     Tables: {
+      collection_items: {
+        Row: {
+          added_at: string
+          agent_notes: string | null
+          buyer_notes: string | null
+          collection_id: string
+          id: string
+          property_id: string
+          reaction:
+            | Database["public"]["Enums"]["collection_item_reaction"]
+            | null
+          status: Database["public"]["Enums"]["collection_item_status"]
+        }
+        Insert: {
+          added_at?: string
+          agent_notes?: string | null
+          buyer_notes?: string | null
+          collection_id: string
+          id?: string
+          property_id: string
+          reaction?:
+            | Database["public"]["Enums"]["collection_item_reaction"]
+            | null
+          status?: Database["public"]["Enums"]["collection_item_status"]
+        }
+        Update: {
+          added_at?: string
+          agent_notes?: string | null
+          buyer_notes?: string | null
+          collection_id?: string
+          id?: string
+          property_id?: string
+          reaction?:
+            | Database["public"]["Enums"]["collection_item_reaction"]
+            | null
+          status?: Database["public"]["Enums"]["collection_item_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collection_items_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "collections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collections: {
+        Row: {
+          agent_user_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_shared: boolean
+          name: string
+          share_token: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agent_user_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_shared?: boolean
+          name: string
+          share_token?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agent_user_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_shared?: boolean
+          name?: string
+          share_token?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       deal_checklist_items: {
         Row: {
           client_visible: boolean
@@ -1035,6 +1118,146 @@ export type Database = {
         }
         Relationships: []
       }
+      user_saved_searches: {
+        Row: {
+          alert_enabled: boolean
+          created_at: string
+          filters: Json
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alert_enabled?: boolean
+          created_at?: string
+          filters?: Json
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alert_enabled?: boolean
+          created_at?: string
+          filters?: Json
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      vendor_reviews: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          rating: number
+          reviewer_id: string
+          used_during_canterra_tx: boolean
+          vendor_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          rating: number
+          reviewer_id: string
+          used_during_canterra_tx?: boolean
+          vendor_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          rating?: number
+          reviewer_id?: string
+          used_during_canterra_tx?: boolean
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_reviews_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendors: {
+        Row: {
+          category: string
+          city: string | null
+          claimed_by: string | null
+          county: string | null
+          created_at: string
+          description: string | null
+          email: string | null
+          id: string
+          is_published: boolean
+          is_verified: boolean
+          name: string
+          phone: string | null
+          photo_url: string | null
+          rating: number | null
+          review_count: number
+          service_counties: string[]
+          service_states: string[]
+          state: string
+          tier: Database["public"]["Enums"]["vendor_tier"]
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          category: string
+          city?: string | null
+          claimed_by?: string | null
+          county?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          is_published?: boolean
+          is_verified?: boolean
+          name: string
+          phone?: string | null
+          photo_url?: string | null
+          rating?: number | null
+          review_count?: number
+          service_counties?: string[]
+          service_states?: string[]
+          state?: string
+          tier?: Database["public"]["Enums"]["vendor_tier"]
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          category?: string
+          city?: string | null
+          claimed_by?: string | null
+          county?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          is_published?: boolean
+          is_verified?: boolean
+          name?: string
+          phone?: string | null
+          photo_url?: string | null
+          rating?: number | null
+          review_count?: number
+          service_counties?: string[]
+          service_states?: string[]
+          state?: string
+          tier?: Database["public"]["Enums"]["vendor_tier"]
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -1055,6 +1278,8 @@ export type Database = {
     Enums: {
       analysis_status: "pending" | "analyzing" | "analyzed" | "failed"
       app_role: "admin" | "agent" | "client"
+      collection_item_reaction: "love" | "like" | "maybe" | "no"
+      collection_item_status: "saved" | "toured" | "offer_made" | "eliminated"
       deal_side: "buyer" | "seller"
       deal_stage:
         | "new_lead"
@@ -1069,6 +1294,7 @@ export type Database = {
         | "lost"
         | "withdrawn"
       listing_status: "active" | "pending" | "sold" | "withdrawn"
+      vendor_tier: "free" | "basic" | "featured"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1198,6 +1424,8 @@ export const Constants = {
     Enums: {
       analysis_status: ["pending", "analyzing", "analyzed", "failed"],
       app_role: ["admin", "agent", "client"],
+      collection_item_reaction: ["love", "like", "maybe", "no"],
+      collection_item_status: ["saved", "toured", "offer_made", "eliminated"],
       deal_side: ["buyer", "seller"],
       deal_stage: [
         "new_lead",
@@ -1213,6 +1441,7 @@ export const Constants = {
         "withdrawn",
       ],
       listing_status: ["active", "pending", "sold", "withdrawn"],
+      vendor_tier: ["free", "basic", "featured"],
     },
   },
 } as const
