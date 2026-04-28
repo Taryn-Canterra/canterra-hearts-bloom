@@ -115,7 +115,8 @@ export const ClientViewPreview = ({ dealId }: { dealId: string }) => {
                       ))}
                     </ul>
                   </div>
-                ))}
+                  );
+                })}
               </CardContent>
             </Card>
 
