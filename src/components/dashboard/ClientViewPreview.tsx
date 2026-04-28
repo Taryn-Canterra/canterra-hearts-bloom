@@ -97,13 +97,15 @@ export const ClientViewPreview = ({ dealId }: { dealId: string }) => {
                 {grouped.length === 0 && (
                   <p className="text-sm text-muted-foreground">No tasks are visible to the client yet.</p>
                 )}
-                {grouped.map(([stage, list]) => (
+                {grouped.map(([stage, list]) => {
+                  const arr = list as any[];
+                  return (
                   <div key={stage}>
                     <h4 className="font-medium text-xs uppercase tracking-wider text-primary mb-2">
                       {STAGE_LABELS[stage] ?? stage}
                     </h4>
                     <ul className="space-y-1.5">
-                      {list.map((i) => (
+                      {arr.map((i) => (
                         <li key={i.id} className="flex items-start gap-2 text-sm">
                           {i.completed
                             ? <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
