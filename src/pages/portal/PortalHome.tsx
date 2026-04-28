@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { ArrowRight, Heart, Trash2 } from "lucide-react";
+import { ArrowRight, Heart, Trash2, FolderHeart, Search } from "lucide-react";
 import { toast } from "sonner";
 
 const STAGE_LABELS: Record<string, string> = {
@@ -64,6 +64,33 @@ export default function PortalHome() {
         <div>
           <h1 className="font-display text-3xl font-semibold text-primary">Your transactions</h1>
           <p className="text-muted-foreground">Track progress, exchange messages, and access shared documents.</p>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Link to="/portal/collections">
+            <Card className="hover:shadow-md transition-shadow">
+              <CardContent className="p-4 flex items-center gap-3">
+                <FolderHeart className="h-6 w-6 text-primary" />
+                <div className="flex-1">
+                  <h3 className="font-medium text-primary">Collections</h3>
+                  <p className="text-xs text-muted-foreground">Named property shortlists to share with your agent</p>
+                </div>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/portal/searches">
+            <Card className="hover:shadow-md transition-shadow">
+              <CardContent className="p-4 flex items-center gap-3">
+                <Search className="h-6 w-6 text-primary" />
+                <div className="flex-1">
+                  <h3 className="font-medium text-primary">Saved searches</h3>
+                  <p className="text-xs text-muted-foreground">Filter sets with optional email alerts</p>
+                </div>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </CardContent>
+            </Card>
+          </Link>
         </div>
 
         {loading && <p className="text-muted-foreground">Loading…</p>}
