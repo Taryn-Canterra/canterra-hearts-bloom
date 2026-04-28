@@ -4,8 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { ClientPortalLayout } from "@/components/portal/ClientPortalLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Heart, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 const STAGE_LABELS: Record<string, string> = {
   new_lead: "New Lead",
@@ -24,21 +26,41 @@ const STAGE_LABELS: Record<string, string> = {
 export default function PortalHome() {
   const { user } = useAuth();
   const [deals, setDeals] = useState<any[]>([]);
+  const [saved, setSaved] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const loadSaved = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("saved_properties")
+      .select("id, created_at, property:properties(*)")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    setSaved(data ?? []);
+  };
 
   useEffect(() => {
     if (!user) return;
     (async () => {
-      // RLS will only return deals where the user is linked via deal_clients
-      const { data } = await supabase.from("deals").select("*").order("updated_at", { ascending: false });
-      setDeals(data ?? []);
+      const [{ data: dealData }] = await Promise.all([
+        supabase.from("deals").select("*").order("updated_at", { ascending: false }),
+        loadSaved(),
+      ]);
+      setDeals(dealData ?? []);
       setLoading(false);
     })();
   }, [user]);
 
+  const unsave = async (savedId: string) => {
+    const { error } = await supabase.from("saved_properties").delete().eq("id", savedId);
+    if (error) { toast.error(error.message); return; }
+    toast("Removed");
+    loadSaved();
+  };
+
   return (
     <ClientPortalLayout>
-      <div className="space-y-6 max-w-4xl">
+      <div className="space-y-8 max-w-4xl">
         <div>
           <h1 className="font-display text-3xl font-semibold text-primary">Your transactions</h1>
           <p className="text-muted-foreground">Track progress, exchange messages, and access shared documents.</p>
@@ -73,6 +95,64 @@ export default function PortalHome() {
               </Card>
             </Link>
           ))}
+        </div>
+
+        {/* Saved properties */}
+        <div className="pt-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Heart className="h-5 w-5 text-primary" />
+            <h2 className="font-display text-2xl font-semibold text-primary">Saved properties</h2>
+            <Badge variant="secondary">{saved.length}</Badge>
+          </div>
+
+          {saved.length === 0 && (
+            <Card>
+              <CardContent className="p-6 text-center text-muted-foreground text-sm">
+                You haven't saved any properties yet. Click the <Heart className="inline h-3.5 w-3.5 mx-1" /> button on a listing to save it here.
+              </CardContent>
+            </Card>
+          )}
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {saved.map((s) => {
+              const p = s.property;
+              if (!p) return null;
+              return (
+                <Card key={s.id} className="overflow-hidden hover:shadow-md transition-shadow">
+                  <Link to={`/listing/${p.id}`} className="block">
+                    {p.primary_photo && (
+                      <img
+                        src={p.primary_photo}
+                        alt={p.title ?? p.address ?? "Saved property"}
+                        className="w-full h-40 object-cover"
+                      />
+                    )}
+                    <CardContent className="p-4">
+                      <h3 className="font-medium text-primary truncate">
+                        {p.title ?? p.address ?? "Property"}
+                      </h3>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {[p.city, p.state].filter(Boolean).join(", ")}
+                      </p>
+                      {p.price && (
+                        <p className="text-sm font-semibold mt-2">${Number(p.price).toLocaleString()}</p>
+                      )}
+                    </CardContent>
+                  </Link>
+                  <div className="px-4 pb-3 flex justify-end">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={(e) => { e.preventDefault(); unsave(s.id); }}
+                    >
+                      <Trash2 className="h-3.5 w-3.5 mr-1" />
+                      Remove
+                    </Button>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
         </div>
       </div>
     </ClientPortalLayout>

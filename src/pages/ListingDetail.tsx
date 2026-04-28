@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   Bed,
@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { FEATURE_LABELS } from "@/data/listings";
 import { useProperty } from "@/hooks/useProperties";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
 const formatPrice = (n: number) =>
@@ -32,8 +33,57 @@ const formatPrice = (n: number) =>
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { listing, loading } = useProperty(id);
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [activeImage, setActiveImage] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [savingFav, setSavingFav] = useState(false);
+
+  // Check if this property is already saved by the current user
+  useEffect(() => {
+    if (!user || !id) { setSaved(false); return; }
+    (async () => {
+      const { data } = await supabase
+        .from("saved_properties")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("property_id", id)
+        .maybeSingle();
+      setSaved(!!data);
+    })();
+  }, [user, id]);
+
+  const toggleSave = async () => {
+    if (!id) return;
+    if (!user) {
+      toast("Sign in to save properties", {
+        description: "Create a free account to keep track of homes you love.",
+        action: { label: "Sign in", onClick: () => navigate("/auth") },
+      });
+      return;
+    }
+    setSavingFav(true);
+    if (saved) {
+      const { error } = await supabase
+        .from("saved_properties")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("property_id", id);
+      setSavingFav(false);
+      if (error) { toast.error(error.message); return; }
+      setSaved(false);
+      toast("Removed from saved properties");
+    } else {
+      const { error } = await supabase
+        .from("saved_properties")
+        .insert({ user_id: user.id, property_id: id });
+      setSavingFav(false);
+      if (error) { toast.error(error.message); return; }
+      setSaved(true);
+      toast.success("Saved to your portal");
+    }
+  };
 
   if (loading) {
     return (
@@ -103,9 +153,9 @@ const ListingDetail = () => {
               Back to results
             </Link>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" onClick={() => toast("Saved to your favorites")}>
-                <Heart className="mr-2 h-4 w-4" />
-                Save
+              <Button variant={saved ? "default" : "ghost"} size="sm" onClick={toggleSave} disabled={savingFav}>
+                <Heart className={`mr-2 h-4 w-4 ${saved ? "fill-current" : ""}`} />
+                {saved ? "Saved" : "Save"}
               </Button>
               <Button variant="ghost" size="sm" onClick={() => toast("Link copied")}>
                 <Share2 className="mr-2 h-4 w-4" />
