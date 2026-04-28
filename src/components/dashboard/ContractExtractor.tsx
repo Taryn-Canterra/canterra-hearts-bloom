@@ -66,7 +66,7 @@ export const ContractExtractor = ({ deal, onSaved }: { deal: any; onSaved: () =>
         mime_type: file.type,
         size_bytes: file.size,
         category: "contract",
-        visible_to_client: false,
+        visible_to_client: true,
       }).select().single();
       if (docErr) throw docErr;
 
