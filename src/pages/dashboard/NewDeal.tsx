@@ -110,8 +110,23 @@ export default function NewDeal() {
     e.preventDefault();
     if (!user) return;
     setSaving(true);
+
+    // Ensure we have a fresh, valid session before insert (otherwise RLS will reject)
+    const { data: sessionData } = await supabase.auth.getSession();
+    let activeUserId = sessionData.session?.user.id;
+    if (!sessionData.session) {
+      const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
+      if (refreshErr || !refreshed.session) {
+        setSaving(false);
+        toast.error("Your session has expired. Please sign in again.");
+        navigate("/auth");
+        return;
+      }
+      activeUserId = refreshed.session.user.id;
+    }
+
     const { data, error } = await supabase.from("deals").insert({
-      assigned_to: user.id,
+      assigned_to: activeUserId!,
       side,
       stage: "new_lead",
       client_name: clientName,
