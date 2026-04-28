@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { ArrowLeft, Heart, ThumbsUp, Meh, X as XIcon, Share2, Trash2 } from "lucide-react";
+import { ArrowLeft, Heart, ThumbsUp, Meh, X as XIcon, Share2, Trash2, Sparkles } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const STATUS_LABELS = {
   saved: "Saved",
@@ -27,9 +28,13 @@ const REACTIONS = [
 export default function PortalCollectionDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [collection, setCollection] = useState<any>(null);
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [savedSearches, setSavedSearches] = useState<any[]>([]);
+  const [selectedSearch, setSelectedSearch] = useState<string>("");
+  const [scoring, setScoring] = useState(false);
 
   const load = async () => {
     if (!id) return;
@@ -45,6 +50,37 @@ export default function PortalCollectionDetail() {
   };
 
   useEffect(() => { load(); }, [id]);
+
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase
+        .from("user_saved_searches")
+        .select("id, name")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      setSavedSearches(data ?? []);
+      if (data && data.length > 0) setSelectedSearch(data[0].id);
+    })();
+  }, [user]);
+
+  const scoreItems = async () => {
+    setScoring(true);
+    const { data, error } = await supabase.functions.invoke("collection-match-score", {
+      body: { collection_id: id, saved_search_id: selectedSearch || undefined },
+    });
+    setScoring(false);
+    if (error) {
+      toast.error(error.message ?? "Scoring failed");
+      return;
+    }
+    if (data?.error) {
+      toast.error(data.error);
+      return;
+    }
+    toast.success(`Scored ${data?.scored ?? 0} properties`);
+    load();
+  };
 
   const updateItem = async (itemId: string, patch: any) => {
     const { error } = await supabase.from("collection_items").update(patch).eq("id", itemId);
