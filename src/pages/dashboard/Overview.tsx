@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { Plus, Inbox } from "lucide-react";
 
 interface Stats {
   totalLeads: number;
@@ -47,9 +50,19 @@ export default function DashboardOverview() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="font-display text-3xl font-semibold text-primary">Overview</h1>
-          <p className="text-muted-foreground">{isAdmin ? "All agents" : "Your"} leads & transactions at a glance.</p>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="font-display text-3xl font-semibold text-primary">Overview</h1>
+            <p className="text-muted-foreground">{isAdmin ? "All agents" : "Your"} leads & transactions at a glance.</p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" asChild>
+              <Link to="/dashboard/leads"><Inbox className="mr-2 h-4 w-4" /> View leads</Link>
+            </Button>
+            <Button asChild>
+              <Link to="/dashboard/deals/new"><Plus className="mr-2 h-4 w-4" /> New deal</Link>
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
