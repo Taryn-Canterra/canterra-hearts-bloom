@@ -1,7 +1,12 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Header = () => {
+  const { user, isAgent, isAdmin, isClient, signOut } = useAuth();
+  const dashboardHref = isAgent || isAdmin ? "/dashboard" : isClient ? "/portal" : "/dashboard";
+  const dashboardLabel = isClient && !isAgent && !isAdmin ? "Client portal" : "Dashboard";
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/85 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
@@ -28,14 +33,29 @@ export const Header = () => {
           </a>
         </nav>
         <div className="flex items-center gap-2">
-          <Link to="/auth">
-            <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-              Agent sign in
-            </Button>
-          </Link>
-          <Button size="sm" asChild>
-            <a href="#search">Save searches</a>
-          </Button>
+          {user ? (
+            <>
+              <Link to={dashboardHref}>
+                <Button variant="ghost" size="sm">
+                  {dashboardLabel}
+                </Button>
+              </Link>
+              <Button variant="outline" size="sm" onClick={() => signOut()}>
+                Sign out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link to="/auth">
+                <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
+                  Agent sign in
+                </Button>
+              </Link>
+              <Button size="sm" asChild>
+                <a href="#search">Save searches</a>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>
