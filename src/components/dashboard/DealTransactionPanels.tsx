@@ -31,6 +31,8 @@ export const ShowingsManager = ({ dealId }: { dealId: string }) => {
       buyer_agent_name: form.buyer_agent_name || null,
       buyer_agent_brokerage: form.buyer_agent_brokerage || null,
       created_by: user!.id,
+      requested_by_role: "agent",
+      confirmed_at: new Date().toISOString(),
     });
     if (error) toast.error(error.message);
     else { setForm({ scheduled_at: "", buyer_agent_name: "", buyer_agent_brokerage: "" }); refresh(); }
