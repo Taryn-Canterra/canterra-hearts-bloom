@@ -117,14 +117,29 @@ export default function PortalCollectionDetail() {
           <ArrowLeft className="mr-2 h-4 w-4" /> All collections
         </Button>
 
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-3 flex-wrap">
           <div>
             <h1 className="font-display text-3xl font-semibold text-primary">{collection.name}</h1>
             <p className="text-sm text-muted-foreground mt-1">{items.length} properties</p>
           </div>
-          <Button variant="outline" onClick={share}>
-            <Share2 className="mr-2 h-4 w-4" /> {collection.is_shared ? "Copy share link" : "Share with agent"}
-          </Button>
+          <div className="flex items-center gap-2 flex-wrap">
+            {savedSearches.length > 0 && (
+              <Select value={selectedSearch} onValueChange={setSelectedSearch}>
+                <SelectTrigger className="h-9 w-44 text-xs"><SelectValue placeholder="Score against…" /></SelectTrigger>
+                <SelectContent>
+                  {savedSearches.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            <Button variant="outline" onClick={scoreItems} disabled={scoring || items.length === 0}>
+              <Sparkles className="mr-2 h-4 w-4" /> {scoring ? "Scoring…" : "AI score"}
+            </Button>
+            <Button variant="outline" onClick={share}>
+              <Share2 className="mr-2 h-4 w-4" /> {collection.is_shared ? "Copy share link" : "Share with agent"}
+            </Button>
+          </div>
         </div>
 
         {items.length === 0 && (
@@ -146,14 +161,27 @@ export default function PortalCollectionDetail() {
                   )}
                   <div className="p-4 space-y-3">
                     <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <Link to={`/listing/${p?.id}`} className="font-display text-lg font-medium text-primary hover:underline">
-                          {p?.title ?? p?.address ?? "Property"}
-                        </Link>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Link to={`/listing/${p?.id}`} className="font-display text-lg font-medium text-primary hover:underline">
+                            {p?.title ?? p?.address ?? "Property"}
+                          </Link>
+                          {typeof it.match_score === "number" && (
+                            <Badge
+                              variant={it.match_score >= 75 ? "default" : it.match_score >= 50 ? "secondary" : "outline"}
+                              className="gap-1"
+                            >
+                              <Sparkles className="h-3 w-3" /> {it.match_score}/100
+                            </Badge>
+                          )}
+                        </div>
                         <p className="text-xs text-muted-foreground">
                           {[p?.city, p?.state].filter(Boolean).join(", ")}
                           {p?.price && ` · $${Number(p.price).toLocaleString()}`}
                         </p>
+                        {it.match_reasoning && (
+                          <p className="text-xs text-muted-foreground italic mt-1">{it.match_reasoning}</p>
+                        )}
                       </div>
                       <Button size="sm" variant="ghost" onClick={() => removeItem(it.id)}>
                         <Trash2 className="h-3.5 w-3.5" />
