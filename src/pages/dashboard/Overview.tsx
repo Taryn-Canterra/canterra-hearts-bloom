@@ -66,14 +66,15 @@ export default function DashboardOverview() {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-          <StatCard label="Total leads" value={stats?.totalLeads ?? "—"} />
-          <StatCard label="New (uncontacted)" value={stats?.newLeads ?? "—"} accent />
-          <StatCard label="Open deals" value={stats?.openDeals ?? "—"} />
-          <StatCard label="Under contract" value={stats?.underContract ?? "—"} />
-          <StatCard label="Closed won" value={stats?.closedWon ?? "—"} />
+          <StatCard label="Total leads" value={stats?.totalLeads ?? "—"} to="/dashboard/leads" />
+          <StatCard label="New (uncontacted)" value={stats?.newLeads ?? "—"} accent to="/dashboard/leads?filter=new" />
+          <StatCard label="Open deals" value={stats?.openDeals ?? "—"} to="/dashboard/deals?filter=open" />
+          <StatCard label="Under contract" value={stats?.underContract ?? "—"} to="/dashboard/deals?filter=under_contract" />
+          <StatCard label="Closed won" value={stats?.closedWon ?? "—"} to="/dashboard/deals?filter=closed_won" />
           <StatCard
             label="Active pipeline value"
             value={stats ? `$${(stats.pipelineValue / 1_000_000).toFixed(2)}M` : "—"}
+            to="/dashboard/deals"
           />
         </div>
       </div>
@@ -81,13 +82,16 @@ export default function DashboardOverview() {
   );
 }
 
-const StatCard = ({ label, value, accent }: { label: string; value: string | number; accent?: boolean }) => (
-  <Card className={accent ? "border-accent" : ""}>
-    <CardHeader className="pb-2">
-      <CardTitle className="text-xs uppercase tracking-wider text-muted-foreground font-medium">{label}</CardTitle>
-    </CardHeader>
-    <CardContent>
-      <div className="text-3xl font-display font-semibold text-primary">{value}</div>
-    </CardContent>
-  </Card>
-);
+const StatCard = ({ label, value, accent, to }: { label: string; value: string | number; accent?: boolean; to?: string }) => {
+  const card = (
+    <Card className={`${accent ? "border-accent" : ""} ${to ? "cursor-pointer hover:shadow-md hover:border-primary/40 transition-all" : ""}`}>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-xs uppercase tracking-wider text-muted-foreground font-medium">{label}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="text-3xl font-display font-semibold text-primary">{value}</div>
+      </CardContent>
+    </Card>
+  );
+  return to ? <Link to={to}>{card}</Link> : card;
+};
