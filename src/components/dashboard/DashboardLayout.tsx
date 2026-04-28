@@ -1,9 +1,10 @@
 import { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, Inbox, Briefcase, LogOut, Home, Sparkles, Store } from "lucide-react";
+import { LayoutDashboard, Inbox, Briefcase, LogOut, Home, Sparkles, Store, Settings } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { NavLink } from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
+import { NotificationsBell } from "@/components/dashboard/NotificationsBell";
 import {
   Sidebar,
   SidebarContent,
@@ -79,13 +80,16 @@ export const DashboardLayout = ({ children }: { children: ReactNode }) => {
         </Sidebar>
 
         <div className="flex-1 flex flex-col">
-          <header className="h-14 flex items-center border-b bg-card px-4">
-            <SidebarTrigger />
-            <div className="ml-4 text-sm">
-              <span className="text-muted-foreground">Signed in as</span>{" "}
-              <span className="font-medium">{user?.email}</span>
-              {isAdmin && <span className="ml-2 px-2 py-0.5 text-[10px] uppercase tracking-wider bg-primary text-primary-foreground rounded">Admin</span>}
+          <header className="h-14 flex items-center justify-between border-b bg-card px-4">
+            <div className="flex items-center">
+              <SidebarTrigger />
+              <div className="ml-4 text-sm">
+                <span className="text-muted-foreground">Signed in as</span>{" "}
+                <span className="font-medium">{user?.email}</span>
+                {isAdmin && <span className="ml-2 px-2 py-0.5 text-[10px] uppercase tracking-wider bg-primary text-primary-foreground rounded">Admin</span>}
+              </div>
             </div>
+            <NotificationsBell />
           </header>
           <main className="flex-1 p-6 overflow-auto">{children}</main>
         </div>
