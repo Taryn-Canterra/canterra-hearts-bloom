@@ -94,9 +94,25 @@ export default function Deals() {
           </Button>
         </div>
 
+        {activeFilter && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Filtered by:</span>
+            <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1">
+              {activeFilter.label}
+              <button
+                onClick={clearFilter}
+                className="ml-1 rounded-sm hover:bg-muted-foreground/20 p-0.5"
+                aria-label="Clear filter"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          </div>
+        )}
+
         <div className="overflow-x-auto pb-4">
           <div className="flex gap-3 min-w-max">
-            {STAGES.map((stage) => {
+            {visibleStages.map((stage) => {
               const stageDeals = deals.filter((d) => d.stage === stage.key);
               return (
                 <div
