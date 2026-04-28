@@ -175,31 +175,46 @@ export default function DealDetail() {
               Items marked client-visible will appear on the buyer/seller's transparency dashboard.
             </p>
           </CardHeader>
-          <CardContent className="space-y-6">
-            {groupedItems.map((g) => (
-              <div key={g.stage.key}>
-                <h3 className="font-medium text-sm uppercase tracking-wider text-primary mb-2">{g.stage.label}</h3>
-                <div className="space-y-2">
-                  {g.items.map((i) => (
-                    <div key={i.id} className="flex items-center gap-3 p-2 rounded hover:bg-muted/30">
-                      <Checkbox checked={i.completed} onCheckedChange={() => toggleItem(i)} />
-                      <div className="flex-1 min-w-0">
-                        <p className={`text-sm ${i.completed ? "line-through text-muted-foreground" : ""}`}>{i.label}</p>
-                        {i.completed_at && (
-                          <p className="text-xs text-muted-foreground">
-                            Completed {new Date(i.completed_at).toLocaleDateString()}
-                          </p>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground">Visible to client</span>
-                        <Switch checked={i.client_visible} onCheckedChange={() => toggleVisibility(i)} />
-                      </div>
+          <CardContent className="space-y-3">
+            {groupedItems.map((g) => {
+              const total = g.items.length;
+              const done = g.items.filter((i) => i.completed).length;
+              const allDone = total > 0 && done === total;
+              return (
+                <Collapsible key={g.stage.key} defaultOpen={!allDone}>
+                  <CollapsibleTrigger className="group w-full flex items-center justify-between gap-2 py-2 px-2 rounded hover:bg-muted/40 text-left">
+                    <div className="flex items-center gap-2">
+                      <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=closed]:-rotate-90" />
+                      <h3 className="font-medium text-sm uppercase tracking-wider text-primary">{g.stage.label}</h3>
+                      <Badge variant={allDone ? "default" : "secondary"} className="text-xs">
+                        {done}/{total}{allDone ? " ✓" : ""}
+                      </Badge>
                     </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div className="space-y-2 pt-2 pl-6">
+                      {g.items.map((i) => (
+                        <div key={i.id} className="flex items-center gap-3 p-2 rounded hover:bg-muted/30">
+                          <Checkbox checked={i.completed} onCheckedChange={() => toggleItem(i)} />
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-sm ${i.completed ? "line-through text-muted-foreground" : ""}`}>{i.label}</p>
+                            {i.completed_at && (
+                              <p className="text-xs text-muted-foreground">
+                                Completed {new Date(i.completed_at).toLocaleDateString()}
+                              </p>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground">Visible to client</span>
+                            <Switch checked={i.client_visible} onCheckedChange={() => toggleVisibility(i)} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              );
+            })}
           </CardContent>
         </Card>
 
