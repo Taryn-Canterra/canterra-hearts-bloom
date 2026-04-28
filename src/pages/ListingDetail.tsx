@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   Bed,
@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { FEATURE_LABELS } from "@/data/listings";
 import { useProperty } from "@/hooks/useProperties";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
 const formatPrice = (n: number) =>
