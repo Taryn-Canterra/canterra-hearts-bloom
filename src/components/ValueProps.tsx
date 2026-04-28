@@ -4,7 +4,7 @@ const FEATURES = [
   {
     icon: Database,
     title: "100% IDX coverage",
-    body: "Every active listing in REcolorado and Pikes Peak MLS — not pay-to-list. The anti-HorseProperties.net.",
+    body: "Every active listing in REcolorado and Pikes Peak MLS — not a pay-to-list directory.",
   },
   {
     icon: Sparkles,
@@ -35,8 +35,8 @@ export const ValueProps = () => {
             Built for the way horse people actually search.
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Zillow filters by acreage and hopes for a barn. Canterra knows the difference between a
-            run-in shed and a foaling stall.
+            Generic portals filter by acreage and hope for a barn. Canterra knows the difference
+            between a run-in shed and a foaling stall.
           </p>
         </div>
         <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
