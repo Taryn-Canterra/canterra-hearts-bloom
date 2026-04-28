@@ -84,11 +84,12 @@ export const ContractExtractor = ({ deal, onSaved }: { deal: any; onSaved: () =>
       const initialPicks: Record<string, boolean> = {};
       for (const k of DEAL_FIELDS) {
         cleaned[k] = ext[k] ?? null;
-        // Default: pick fields that have a new value AND deal is currently empty
+        // Default: pick fields where the extracted value differs from what's saved.
+        // This covers both empty fields AND updated values from a counter proposal.
         const current = deal[k];
         const hasNew = ext[k] !== null && ext[k] !== undefined && ext[k] !== "";
-        const isEmpty = current === null || current === undefined || current === "";
-        initialPicks[k] = hasNew && isEmpty;
+        const changed = hasNew && String(ext[k]) !== String(current ?? "");
+        initialPicks[k] = changed;
       }
       setExtracted(cleaned);
       setPicked(initialPicks);
