@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
@@ -10,6 +10,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+
+type ClientSuggestion = {
+  client_name: string;
+  client_email: string | null;
+  client_phone: string | null;
+  side: string;
+  property_address: string | null;
+};
 
 export default function NewDeal() {
   const { user } = useAuth();
@@ -27,6 +35,56 @@ export default function NewDeal() {
   const [expectedClose, setExpectedClose] = useState("");
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
+
+  const [pastClients, setPastClients] = useState<ClientSuggestion[]>([]);
+  const [showSuggest, setShowSuggest] = useState(false);
+  const nameWrapRef = useRef<HTMLDivElement>(null);
+
+  // Load distinct past clients for this agent (for autofill)
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase
+        .from("deals")
+        .select("client_name, client_email, client_phone, side, property_address, created_at")
+        .eq("assigned_to", user.id)
+        .order("created_at", { ascending: false })
+        .limit(500);
+      const seen = new Set<string>();
+      const uniq: ClientSuggestion[] = [];
+      (data ?? []).forEach((d: any) => {
+        const key = (d.client_name ?? "").trim().toLowerCase() + "|" + (d.client_email ?? "").toLowerCase();
+        if (!d.client_name || seen.has(key)) return;
+        seen.add(key);
+        uniq.push(d);
+      });
+      setPastClients(uniq);
+    })();
+  }, [user]);
+
+  useEffect(() => {
+    const onDoc = (e: MouseEvent) => {
+      if (nameWrapRef.current && !nameWrapRef.current.contains(e.target as Node)) setShowSuggest(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, []);
+
+  const matches = useMemo(() => {
+    const q = clientName.trim().toLowerCase();
+    if (!q) return [];
+    return pastClients
+      .filter((c) => c.client_name.toLowerCase().includes(q) || (c.client_email ?? "").toLowerCase().includes(q))
+      .slice(0, 6);
+  }, [clientName, pastClients]);
+
+  const pickSuggestion = (c: ClientSuggestion) => {
+    setClientName(c.client_name);
+    setClientEmail(c.client_email ?? "");
+    setClientPhone(c.client_phone ?? "");
+    setShowSuggest(false);
+    toast.success(`Autofilled from existing ${c.side} deal`);
+  };
 
   // Pre-fill from inquiry if converting
   useEffect(() => {
@@ -113,9 +171,35 @@ export default function NewDeal() {
                   <Input type="date" value={expectedClose} onChange={(e) => setExpectedClose(e.target.value)} />
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2" ref={nameWrapRef}>
                 <Label>Client name *</Label>
-                <Input required value={clientName} onChange={(e) => setClientName(e.target.value)} />
+                <div className="relative">
+                  <Input
+                    required
+                    autoComplete="off"
+                    value={clientName}
+                    onChange={(e) => { setClientName(e.target.value); setShowSuggest(true); }}
+                    onFocus={() => setShowSuggest(true)}
+                    placeholder="Start typing to autofill from existing clients…"
+                  />
+                  {showSuggest && matches.length > 0 && (
+                    <div className="absolute z-10 mt-1 w-full rounded-md border bg-popover shadow-md max-h-64 overflow-auto">
+                      {matches.map((c, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => pickSuggestion(c)}
+                          className="w-full text-left px-3 py-2 hover:bg-accent hover:text-accent-foreground border-b last:border-b-0"
+                        >
+                          <div className="text-sm font-medium">{c.client_name}</div>
+                          <div className="text-xs text-muted-foreground truncate">
+                            {[c.client_email, c.client_phone, `${c.side} deal`].filter(Boolean).join(" · ")}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
