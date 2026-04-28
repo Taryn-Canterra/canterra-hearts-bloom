@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { Trash2, ArrowLeft } from "lucide-react";
 import { DealClientPanel } from "@/components/dashboard/DealClientPanel";
 import { DealKeyDatesEditor } from "@/components/dashboard/DealKeyDatesEditor";
+import { ContractExtractor } from "@/components/dashboard/ContractExtractor";
 import {
   ShowingsManager, OffersManager, LenderMilestonesManager,
   PriceReductionManager, EsignManager, VendorsManager, RemindersManager,
@@ -208,6 +209,7 @@ export default function DealDetail() {
           </TabsList>
 
           <TabsContent value="transaction" className="space-y-6 mt-4">
+            <ContractExtractor deal={deal} onSaved={load} />
             <DealKeyDatesEditor deal={deal} onSaved={load} />
             {deal.side === "seller" && <ShowingsManager dealId={id!} />}
             <OffersManager dealId={id!} isSeller={deal.side === "seller"} />
