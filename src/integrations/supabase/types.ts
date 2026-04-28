@@ -21,6 +21,10 @@ export type Database = {
           buyer_notes: string | null
           collection_id: string
           id: string
+          match_against_search: string | null
+          match_generated_at: string | null
+          match_reasoning: string | null
+          match_score: number | null
           property_id: string
           reaction:
             | Database["public"]["Enums"]["collection_item_reaction"]
@@ -33,6 +37,10 @@ export type Database = {
           buyer_notes?: string | null
           collection_id: string
           id?: string
+          match_against_search?: string | null
+          match_generated_at?: string | null
+          match_reasoning?: string | null
+          match_score?: number | null
           property_id: string
           reaction?:
             | Database["public"]["Enums"]["collection_item_reaction"]
@@ -45,6 +53,10 @@ export type Database = {
           buyer_notes?: string | null
           collection_id?: string
           id?: string
+          match_against_search?: string | null
+          match_generated_at?: string | null
+          match_reasoning?: string | null
+          match_score?: number | null
           property_id?: string
           reaction?:
             | Database["public"]["Enums"]["collection_item_reaction"]
@@ -579,33 +591,42 @@ export type Database = {
         Row: {
           buyer_agent_brokerage: string | null
           buyer_agent_name: string | null
+          confirmed_at: string | null
           created_at: string
           created_by: string
           deal_id: string
           feedback: string | null
           id: string
+          notes: string | null
+          requested_by_role: string | null
           scheduled_at: string
           status: string
         }
         Insert: {
           buyer_agent_brokerage?: string | null
           buyer_agent_name?: string | null
+          confirmed_at?: string | null
           created_at?: string
           created_by: string
           deal_id: string
           feedback?: string | null
           id?: string
+          notes?: string | null
+          requested_by_role?: string | null
           scheduled_at: string
           status?: string
         }
         Update: {
           buyer_agent_brokerage?: string | null
           buyer_agent_name?: string | null
+          confirmed_at?: string | null
           created_at?: string
           created_by?: string
           deal_id?: string
           feedback?: string | null
           id?: string
+          notes?: string | null
+          requested_by_role?: string | null
           scheduled_at?: string
           status?: string
         }
@@ -622,6 +643,7 @@ export type Database = {
           name: string
           notes: string | null
           phone: string | null
+          vendor_id: string | null
         }
         Insert: {
           added_by: string
@@ -633,6 +655,7 @@ export type Database = {
           name: string
           notes?: string | null
           phone?: string | null
+          vendor_id?: string | null
         }
         Update: {
           added_by?: string
@@ -644,6 +667,7 @@ export type Database = {
           name?: string
           notes?: string | null
           phone?: string | null
+          vendor_id?: string | null
         }
         Relationships: []
       }
@@ -814,6 +838,51 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_routing_rules: {
+        Row: {
+          active: boolean
+          assign_to: string
+          created_at: string
+          created_by: string
+          id: string
+          match_county: string | null
+          match_lead_type: string | null
+          match_max_price: number | null
+          match_min_price: number | null
+          name: string
+          priority: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          assign_to: string
+          created_at?: string
+          created_by: string
+          id?: string
+          match_county?: string | null
+          match_lead_type?: string | null
+          match_max_price?: number | null
+          match_min_price?: number | null
+          name: string
+          priority?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          assign_to?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          match_county?: string | null
+          match_lead_type?: string | null
+          match_max_price?: number | null
+          match_min_price?: number | null
+          name?: string
+          priority?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       listing_analysis_runs: {
         Row: {
           created_at: string
@@ -854,6 +923,90 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      listing_claims: {
+        Row: {
+          approved_user_id: string | null
+          brokerage: string | null
+          claimant_email: string
+          claimant_name: string
+          claimant_phone: string | null
+          created_at: string
+          id: string
+          license_number: string | null
+          message: string | null
+          property_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+        }
+        Insert: {
+          approved_user_id?: string | null
+          brokerage?: string | null
+          claimant_email: string
+          claimant_name: string
+          claimant_phone?: string | null
+          created_at?: string
+          id?: string
+          license_number?: string | null
+          message?: string | null
+          property_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Update: {
+          approved_user_id?: string | null
+          brokerage?: string | null
+          claimant_email?: string
+          claimant_name?: string
+          claimant_phone?: string | null
+          created_at?: string
+          id?: string
+          license_number?: string | null
+          message?: string | null
+          property_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          deal_id: string | null
+          id: string
+          kind: string
+          link: string | null
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          deal_id?: string | null
+          id?: string
+          kind: string
+          link?: string | null
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          deal_id?: string | null
+          id?: string
+          kind?: string
+          link?: string | null
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -1041,6 +1194,42 @@ export type Database = {
           name?: string
           phone?: string | null
           property_id?: string
+        }
+        Relationships: []
+      }
+      property_intelligence_reports: {
+        Row: {
+          created_at: string
+          generated_by: string | null
+          highlights: Json
+          id: string
+          model: string | null
+          property_id: string
+          questions_to_ask: Json
+          summary: string
+          watchouts: Json
+        }
+        Insert: {
+          created_at?: string
+          generated_by?: string | null
+          highlights?: Json
+          id?: string
+          model?: string | null
+          property_id: string
+          questions_to_ask?: Json
+          summary: string
+          watchouts?: Json
+        }
+        Update: {
+          created_at?: string
+          generated_by?: string | null
+          highlights?: Json
+          id?: string
+          model?: string | null
+          property_id?: string
+          questions_to_ask?: Json
+          summary?: string
+          watchouts?: Json
         }
         Relationships: []
       }

@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { ArrowLeft, Heart, ThumbsUp, Meh, X as XIcon, Share2, Trash2 } from "lucide-react";
+import { ArrowLeft, Heart, ThumbsUp, Meh, X as XIcon, Share2, Trash2, Sparkles } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const STATUS_LABELS = {
   saved: "Saved",
@@ -27,9 +28,13 @@ const REACTIONS = [
 export default function PortalCollectionDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [collection, setCollection] = useState<any>(null);
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [savedSearches, setSavedSearches] = useState<any[]>([]);
+  const [selectedSearch, setSelectedSearch] = useState<string>("");
+  const [scoring, setScoring] = useState(false);
 
   const load = async () => {
     if (!id) return;
@@ -45,6 +50,37 @@ export default function PortalCollectionDetail() {
   };
 
   useEffect(() => { load(); }, [id]);
+
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase
+        .from("user_saved_searches")
+        .select("id, name")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      setSavedSearches(data ?? []);
+      if (data && data.length > 0) setSelectedSearch(data[0].id);
+    })();
+  }, [user]);
+
+  const scoreItems = async () => {
+    setScoring(true);
+    const { data, error } = await supabase.functions.invoke("collection-match-score", {
+      body: { collection_id: id, saved_search_id: selectedSearch || undefined },
+    });
+    setScoring(false);
+    if (error) {
+      toast.error(error.message ?? "Scoring failed");
+      return;
+    }
+    if (data?.error) {
+      toast.error(data.error);
+      return;
+    }
+    toast.success(`Scored ${data?.scored ?? 0} properties`);
+    load();
+  };
 
   const updateItem = async (itemId: string, patch: any) => {
     const { error } = await supabase.from("collection_items").update(patch).eq("id", itemId);
@@ -81,14 +117,29 @@ export default function PortalCollectionDetail() {
           <ArrowLeft className="mr-2 h-4 w-4" /> All collections
         </Button>
 
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-3 flex-wrap">
           <div>
             <h1 className="font-display text-3xl font-semibold text-primary">{collection.name}</h1>
             <p className="text-sm text-muted-foreground mt-1">{items.length} properties</p>
           </div>
-          <Button variant="outline" onClick={share}>
-            <Share2 className="mr-2 h-4 w-4" /> {collection.is_shared ? "Copy share link" : "Share with agent"}
-          </Button>
+          <div className="flex items-center gap-2 flex-wrap">
+            {savedSearches.length > 0 && (
+              <Select value={selectedSearch} onValueChange={setSelectedSearch}>
+                <SelectTrigger className="h-9 w-44 text-xs"><SelectValue placeholder="Score against…" /></SelectTrigger>
+                <SelectContent>
+                  {savedSearches.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            <Button variant="outline" onClick={scoreItems} disabled={scoring || items.length === 0}>
+              <Sparkles className="mr-2 h-4 w-4" /> {scoring ? "Scoring…" : "AI score"}
+            </Button>
+            <Button variant="outline" onClick={share}>
+              <Share2 className="mr-2 h-4 w-4" /> {collection.is_shared ? "Copy share link" : "Share with agent"}
+            </Button>
+          </div>
         </div>
 
         {items.length === 0 && (
@@ -110,14 +161,27 @@ export default function PortalCollectionDetail() {
                   )}
                   <div className="p-4 space-y-3">
                     <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <Link to={`/listing/${p?.id}`} className="font-display text-lg font-medium text-primary hover:underline">
-                          {p?.title ?? p?.address ?? "Property"}
-                        </Link>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Link to={`/listing/${p?.id}`} className="font-display text-lg font-medium text-primary hover:underline">
+                            {p?.title ?? p?.address ?? "Property"}
+                          </Link>
+                          {typeof it.match_score === "number" && (
+                            <Badge
+                              variant={it.match_score >= 75 ? "default" : it.match_score >= 50 ? "secondary" : "outline"}
+                              className="gap-1"
+                            >
+                              <Sparkles className="h-3 w-3" /> {it.match_score}/100
+                            </Badge>
+                          )}
+                        </div>
                         <p className="text-xs text-muted-foreground">
                           {[p?.city, p?.state].filter(Boolean).join(", ")}
                           {p?.price && ` · $${Number(p.price).toLocaleString()}`}
                         </p>
+                        {it.match_reasoning && (
+                          <p className="text-xs text-muted-foreground italic mt-1">{it.match_reasoning}</p>
+                        )}
                       </div>
                       <Button size="sm" variant="ghost" onClick={() => removeItem(it.id)}>
                         <Trash2 className="h-3.5 w-3.5" />

@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Plus, Inbox } from "lucide-react";
+import { TodaysFocus } from "@/components/dashboard/TodaysFocus";
 
 interface Stats {
   totalLeads: number;
@@ -77,6 +78,8 @@ export default function DashboardOverview() {
             to="/dashboard/deals"
           />
         </div>
+
+        <TodaysFocus />
       </div>
     </DashboardLayout>
   );

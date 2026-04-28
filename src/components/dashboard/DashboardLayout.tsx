@@ -1,9 +1,10 @@
 import { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, Inbox, Briefcase, LogOut, Home, Sparkles, Store } from "lucide-react";
+import { LayoutDashboard, Inbox, Briefcase, LogOut, Home, Sparkles, Store, Settings } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { NavLink } from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
+import { NotificationsBell } from "@/components/dashboard/NotificationsBell";
 import {
   Sidebar,
   SidebarContent,
@@ -24,6 +25,7 @@ const items = [
   { title: "Deals", url: "/dashboard/deals", icon: Briefcase },
   { title: "AI tools", url: "/dashboard/ai-tools", icon: Sparkles },
   { title: "Vendors", url: "/vendors", icon: Store },
+  { title: "Routing rules", url: "/dashboard/routing", icon: Settings, adminOnly: true },
 ];
 
 export const DashboardLayout = ({ children }: { children: ReactNode }) => {
@@ -54,16 +56,18 @@ export const DashboardLayout = ({ children }: { children: ReactNode }) => {
               <SidebarGroupLabel>Main</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {items.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild>
-                        <NavLink to={item.url} end={item.end} className="hover:bg-muted/50" activeClassName="bg-muted text-primary font-medium">
-                          <item.icon className="mr-2 h-4 w-4" />
-                          <span>{item.title}</span>
-                        </NavLink>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
+                  {items
+                    .filter((item) => !item.adminOnly || isAdmin)
+                    .map((item) => (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton asChild>
+                          <NavLink to={item.url} end={item.end} className="hover:bg-muted/50" activeClassName="bg-muted text-primary font-medium">
+                            <item.icon className="mr-2 h-4 w-4" />
+                            <span>{item.title}</span>
+                          </NavLink>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
@@ -79,13 +83,16 @@ export const DashboardLayout = ({ children }: { children: ReactNode }) => {
         </Sidebar>
 
         <div className="flex-1 flex flex-col">
-          <header className="h-14 flex items-center border-b bg-card px-4">
-            <SidebarTrigger />
-            <div className="ml-4 text-sm">
-              <span className="text-muted-foreground">Signed in as</span>{" "}
-              <span className="font-medium">{user?.email}</span>
-              {isAdmin && <span className="ml-2 px-2 py-0.5 text-[10px] uppercase tracking-wider bg-primary text-primary-foreground rounded">Admin</span>}
+          <header className="h-14 flex items-center justify-between border-b bg-card px-4">
+            <div className="flex items-center">
+              <SidebarTrigger />
+              <div className="ml-4 text-sm">
+                <span className="text-muted-foreground">Signed in as</span>{" "}
+                <span className="font-medium">{user?.email}</span>
+                {isAdmin && <span className="ml-2 px-2 py-0.5 text-[10px] uppercase tracking-wider bg-primary text-primary-foreground rounded">Admin</span>}
+              </div>
             </div>
+            <NotificationsBell />
           </header>
           <main className="flex-1 p-6 overflow-auto">{children}</main>
         </div>

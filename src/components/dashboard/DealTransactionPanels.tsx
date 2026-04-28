@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,8 @@ export const ShowingsManager = ({ dealId }: { dealId: string }) => {
       buyer_agent_name: form.buyer_agent_name || null,
       buyer_agent_brokerage: form.buyer_agent_brokerage || null,
       created_by: user!.id,
+      requested_by_role: "agent",
+      confirmed_at: new Date().toISOString(),
     });
     if (error) toast.error(error.message);
     else { setForm({ scheduled_at: "", buyer_agent_name: "", buyer_agent_brokerage: "" }); refresh(); }
@@ -70,33 +73,59 @@ export const ShowingsManager = ({ dealId }: { dealId: string }) => {
         </form>
 
         <div className="space-y-2">
-          {items.map((s) => (
-            <div key={s.id} className="border rounded p-3 space-y-2">
-              <div className="flex items-center justify-between gap-2 flex-wrap">
-                <div>
-                  <p className="text-sm font-medium">{new Date(s.scheduled_at).toLocaleString()}</p>
-                  {s.buyer_agent_name && <p className="text-xs text-muted-foreground">{s.buyer_agent_name}{s.buyer_agent_brokerage ? ` · ${s.buyer_agent_brokerage}` : ""}</p>}
+          {items.map((s) => {
+            const pendingClient = s.requested_by_role === "client" && !s.confirmed_at;
+            return (
+              <div key={s.id} className={`border rounded p-3 space-y-2 ${pendingClient ? "border-primary/50 bg-primary/5" : ""}`}>
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <div>
+                    <p className="text-sm font-medium">
+                      {new Date(s.scheduled_at).toLocaleString()}
+                      {pendingClient && (
+                        <Badge variant="default" className="ml-2 text-[10px]">Buyer requested</Badge>
+                      )}
+                      {s.confirmed_at && (
+                        <Badge variant="secondary" className="ml-2 text-[10px]">Confirmed</Badge>
+                      )}
+                    </p>
+                    {s.buyer_agent_name && <p className="text-xs text-muted-foreground">{s.buyer_agent_name}{s.buyer_agent_brokerage ? ` · ${s.buyer_agent_brokerage}` : ""}</p>}
+                    {s.notes && <p className="text-xs text-muted-foreground italic mt-1">"{s.notes}"</p>}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {pendingClient && (
+                      <Button
+                        size="sm"
+                        onClick={async () => {
+                          await supabase
+                            .from("deal_showings")
+                            .update({ confirmed_at: new Date().toISOString(), status: "scheduled" })
+                            .eq("id", s.id);
+                          refresh();
+                        }}
+                      >
+                        Confirm
+                      </Button>
+                    )}
+                    <Select value={s.status} onValueChange={(v) => updateStatus(s.id, v)}>
+                      <SelectTrigger className="h-8 w-36"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="scheduled">Scheduled</SelectItem>
+                        <SelectItem value="completed">Completed</SelectItem>
+                        <SelectItem value="cancelled">Cancelled</SelectItem>
+                        <SelectItem value="no_show">No-show</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button size="sm" variant="ghost" onClick={() => remove(s.id)}><Trash2 className="h-4 w-4" /></Button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Select value={s.status} onValueChange={(v) => updateStatus(s.id, v)}>
-                    <SelectTrigger className="h-8 w-36"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="scheduled">Scheduled</SelectItem>
-                      <SelectItem value="completed">Completed</SelectItem>
-                      <SelectItem value="cancelled">Cancelled</SelectItem>
-                      <SelectItem value="no_show">No-show</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button size="sm" variant="ghost" onClick={() => remove(s.id)}><Trash2 className="h-4 w-4" /></Button>
-                </div>
+                <Textarea
+                  rows={2} placeholder="Feedback from buyer's agent…"
+                  defaultValue={s.feedback ?? ""}
+                  onBlur={(e) => updateFeedback(s.id, e.target.value)}
+                />
               </div>
-              <Textarea
-                rows={2} placeholder="Feedback from buyer's agent…"
-                defaultValue={s.feedback ?? ""}
-                onBlur={(e) => updateFeedback(s.id, e.target.value)}
-              />
-            </div>
-          ))}
+            );
+          })}
           {items.length === 0 && <p className="text-sm text-muted-foreground">No showings logged.</p>}
         </div>
       </CardContent>
@@ -400,7 +429,8 @@ export const EsignManager = ({ dealId }: { dealId: string }) => {
 export const VendorsManager = ({ dealId }: { dealId: string }) => {
   const { user } = useAuth();
   const [items, setItems] = useState<any[]>([]);
-  const [form, setForm] = useState({ category: "farrier", name: "", phone: "", email: "", notes: "" });
+  const [directory, setDirectory] = useState<any[]>([]);
+  const [form, setForm] = useState({ category: "farrier", name: "", phone: "", email: "", notes: "", vendor_id: "" });
 
   const refresh = async () => {
     const { data } = await supabase.from("deal_vendors").select("*").eq("deal_id", dealId).order("category");
@@ -408,13 +438,44 @@ export const VendorsManager = ({ dealId }: { dealId: string }) => {
   };
   useEffect(() => { refresh(); }, [dealId]);
 
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("vendors")
+        .select("id, name, category, phone, email")
+        .eq("is_published", true)
+        .order("name")
+        .limit(200);
+      setDirectory(data ?? []);
+    })();
+  }, []);
+
+  const pickFromDirectory = (vendorId: string) => {
+    const v = directory.find((d) => d.id === vendorId);
+    if (!v) return;
+    setForm({
+      category: v.category,
+      name: v.name,
+      phone: v.phone ?? "",
+      email: v.email ?? "",
+      notes: "",
+      vendor_id: v.id,
+    });
+  };
+
   const add = async (e: React.FormEvent) => {
     e.preventDefault();
     await supabase.from("deal_vendors").insert({
-      deal_id: dealId, ...form, added_by: user!.id,
-      phone: form.phone || null, email: form.email || null, notes: form.notes || null,
+      deal_id: dealId,
+      category: form.category,
+      name: form.name,
+      phone: form.phone || null,
+      email: form.email || null,
+      notes: form.notes || null,
+      vendor_id: form.vendor_id || null,
+      added_by: user!.id,
     });
-    setForm({ category: "farrier", name: "", phone: "", email: "", notes: "" });
+    setForm({ category: "farrier", name: "", phone: "", email: "", notes: "", vendor_id: "" });
     refresh();
   };
 
@@ -427,6 +488,19 @@ export const VendorsManager = ({ dealId }: { dealId: string }) => {
     <Card>
       <CardHeader><CardTitle>Vendor directory (post-close)</CardTitle></CardHeader>
       <CardContent className="space-y-3">
+        {directory.length > 0 && (
+          <div>
+            <Label className="text-xs">Pick from Canterra directory</Label>
+            <Select value={form.vendor_id} onValueChange={pickFromDirectory}>
+              <SelectTrigger className="mt-1"><SelectValue placeholder="Search directory…" /></SelectTrigger>
+              <SelectContent>
+                {directory.map((v) => (
+                  <SelectItem key={v.id} value={v.id}>{v.name} · {v.category}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
         <form onSubmit={add} className="grid grid-cols-1 md:grid-cols-3 gap-2">
           <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
             <SelectTrigger><SelectValue /></SelectTrigger>
@@ -446,7 +520,14 @@ export const VendorsManager = ({ dealId }: { dealId: string }) => {
             <div key={v.id} className="flex items-center gap-3 border rounded p-2">
               <Badge variant="outline" className="text-[10px]">{v.category}</Badge>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium">{v.name}</p>
+                <p className="text-sm font-medium flex items-center gap-2">
+                  {v.name}
+                  {v.vendor_id && (
+                    <Link to={`/vendors/${v.vendor_id}`} className="text-[10px] text-accent hover:underline">
+                      directory ↗
+                    </Link>
+                  )}
+                </p>
                 <p className="text-xs text-muted-foreground">{[v.phone, v.email].filter(Boolean).join(" · ")}</p>
               </div>
               <Button size="sm" variant="ghost" onClick={() => remove(v.id)}><Trash2 className="h-4 w-4" /></Button>
