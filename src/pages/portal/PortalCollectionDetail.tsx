@@ -46,7 +46,7 @@ export default function PortalCollectionDetail() {
 
   useEffect(() => { load(); }, [id]);
 
-  const updateItem = async (itemId: string, patch: Record<string, unknown>) => {
+  const updateItem = async (itemId: string, patch: any) => {
     const { error } = await supabase.from("collection_items").update(patch).eq("id", itemId);
     if (error) { toast.error(error.message); return; }
     load();
