@@ -115,7 +115,7 @@ export const ContractExtractor = ({ deal, onSaved }: { deal: any; onSaved: () =>
       toast.info("Nothing selected to apply");
       return;
     }
-    const { error } = await supabase.from("deals").update(payload).eq("id", deal.id);
+    const { error } = await supabase.from("deals").update(payload as any).eq("id", deal.id);
     setBusy(false);
     if (error) {
       toast.error(error.message);
