@@ -15,6 +15,7 @@ import { Trash2, ArrowLeft } from "lucide-react";
 import { DealClientPanel } from "@/components/dashboard/DealClientPanel";
 import { DealKeyDatesEditor } from "@/components/dashboard/DealKeyDatesEditor";
 import { ContractExtractor } from "@/components/dashboard/ContractExtractor";
+import { DealDocumentsManager } from "@/components/dashboard/DealDocumentsManager";
 import {
   ShowingsManager, OffersManager, LenderMilestonesManager,
   PriceReductionManager, EsignManager, VendorsManager, RemindersManager,
@@ -201,8 +202,9 @@ export default function DealDetail() {
         </Card>
 
         <Tabs defaultValue="transaction" className="w-full">
-          <TabsList className="grid grid-cols-2 md:grid-cols-4 w-full">
+          <TabsList className="grid grid-cols-2 md:grid-cols-5 w-full">
             <TabsTrigger value="transaction">Transaction</TabsTrigger>
+            <TabsTrigger value="documents">Documents</TabsTrigger>
             <TabsTrigger value="parties">Client & messaging</TabsTrigger>
             <TabsTrigger value="postclose">Post-close</TabsTrigger>
             <TabsTrigger value="notes">Internal notes</TabsTrigger>
@@ -216,6 +218,10 @@ export default function DealDetail() {
             {deal.side === "seller" && <PriceReductionManager deal={deal} onSaved={load} />}
             {deal.side === "buyer" && <LenderMilestonesManager dealId={id!} />}
             <EsignManager dealId={id!} />
+          </TabsContent>
+
+          <TabsContent value="documents" className="space-y-6 mt-4">
+            <DealDocumentsManager dealId={id!} />
           </TabsContent>
 
           <TabsContent value="parties" className="space-y-6 mt-4">
