@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, Inbox, Briefcase, LogOut, Home, Sparkles, Store, Settings } from "lucide-react";
+import { LayoutDashboard, Inbox, Briefcase, LogOut, Home, Sparkles, Store, Settings, BadgeCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { NavLink } from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ const items = [
   { title: "AI tools", url: "/dashboard/ai-tools", icon: Sparkles },
   { title: "Vendors", url: "/vendors", icon: Store },
   { title: "Routing rules", url: "/dashboard/routing", icon: Settings, adminOnly: true },
+  { title: "Listing claims", url: "/dashboard/claims", icon: BadgeCheck, adminOnly: true },
 ];
 
 export const DashboardLayout = ({ children }: { children: ReactNode }) => {
