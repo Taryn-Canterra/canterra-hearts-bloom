@@ -43,10 +43,6 @@ export default function Deals() {
   const { user, isAdmin } = useAuth();
   const [deals, setDeals] = useState<Deal[]>([]);
   const navigate = useNavigate();
-
-  const { user, isAdmin } = useAuth();
-  const [deals, setDeals] = useState<Deal[]>([]);
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const filter = searchParams.get("filter");
   const activeFilter = filter && STAGE_FILTERS[filter] ? STAGE_FILTERS[filter] : null;
@@ -83,12 +79,6 @@ export default function Deals() {
     const next = new URLSearchParams(searchParams);
     next.delete("filter");
     setSearchParams(next);
-  };
-
-  const onDrop = (e: React.DragEvent, stage: string) => {
-    e.preventDefault();
-    const id = e.dataTransfer.getData("text/plain");
-    if (id) moveStage(id, stage);
   };
 
   return (
