@@ -44,6 +44,18 @@ export default function Deals() {
   const [deals, setDeals] = useState<Deal[]>([]);
   const navigate = useNavigate();
 
+  const { user, isAdmin } = useAuth();
+  const [deals, setDeals] = useState<Deal[]>([]);
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filter = searchParams.get("filter");
+  const activeFilter = filter && STAGE_FILTERS[filter] ? STAGE_FILTERS[filter] : null;
+
+  const visibleStages = useMemo(
+    () => (activeFilter ? STAGES.filter((s) => activeFilter.stages.includes(s.key)) : STAGES),
+    [activeFilter]
+  );
+
   const load = async () => {
     const q = isAdmin
       ? supabase.from("deals").select("*").order("updated_at", { ascending: false })
@@ -59,6 +71,18 @@ export default function Deals() {
     const { error } = await supabase.from("deals").update({ stage: newStage as any }).eq("id", dealId);
     if (error) toast.error(error.message);
     else load();
+  };
+
+  const onDrop = (e: React.DragEvent, stage: string) => {
+    e.preventDefault();
+    const id = e.dataTransfer.getData("text/plain");
+    if (id) moveStage(id, stage);
+  };
+
+  const clearFilter = () => {
+    const next = new URLSearchParams(searchParams);
+    next.delete("filter");
+    setSearchParams(next);
   };
 
   const onDrop = (e: React.DragEvent, stage: string) => {
