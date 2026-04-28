@@ -428,7 +428,8 @@ export const EsignManager = ({ dealId }: { dealId: string }) => {
 export const VendorsManager = ({ dealId }: { dealId: string }) => {
   const { user } = useAuth();
   const [items, setItems] = useState<any[]>([]);
-  const [form, setForm] = useState({ category: "farrier", name: "", phone: "", email: "", notes: "" });
+  const [directory, setDirectory] = useState<any[]>([]);
+  const [form, setForm] = useState({ category: "farrier", name: "", phone: "", email: "", notes: "", vendor_id: "" });
 
   const refresh = async () => {
     const { data } = await supabase.from("deal_vendors").select("*").eq("deal_id", dealId).order("category");
@@ -436,13 +437,44 @@ export const VendorsManager = ({ dealId }: { dealId: string }) => {
   };
   useEffect(() => { refresh(); }, [dealId]);
 
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("vendors")
+        .select("id, name, category, phone, email")
+        .eq("is_published", true)
+        .order("name")
+        .limit(200);
+      setDirectory(data ?? []);
+    })();
+  }, []);
+
+  const pickFromDirectory = (vendorId: string) => {
+    const v = directory.find((d) => d.id === vendorId);
+    if (!v) return;
+    setForm({
+      category: v.category,
+      name: v.name,
+      phone: v.phone ?? "",
+      email: v.email ?? "",
+      notes: "",
+      vendor_id: v.id,
+    });
+  };
+
   const add = async (e: React.FormEvent) => {
     e.preventDefault();
     await supabase.from("deal_vendors").insert({
-      deal_id: dealId, ...form, added_by: user!.id,
-      phone: form.phone || null, email: form.email || null, notes: form.notes || null,
+      deal_id: dealId,
+      category: form.category,
+      name: form.name,
+      phone: form.phone || null,
+      email: form.email || null,
+      notes: form.notes || null,
+      vendor_id: form.vendor_id || null,
+      added_by: user!.id,
     });
-    setForm({ category: "farrier", name: "", phone: "", email: "", notes: "" });
+    setForm({ category: "farrier", name: "", phone: "", email: "", notes: "", vendor_id: "" });
     refresh();
   };
 
@@ -455,6 +487,19 @@ export const VendorsManager = ({ dealId }: { dealId: string }) => {
     <Card>
       <CardHeader><CardTitle>Vendor directory (post-close)</CardTitle></CardHeader>
       <CardContent className="space-y-3">
+        {directory.length > 0 && (
+          <div>
+            <Label className="text-xs">Pick from Canterra directory</Label>
+            <Select value={form.vendor_id} onValueChange={pickFromDirectory}>
+              <SelectTrigger className="mt-1"><SelectValue placeholder="Search directory…" /></SelectTrigger>
+              <SelectContent>
+                {directory.map((v) => (
+                  <SelectItem key={v.id} value={v.id}>{v.name} · {v.category}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
         <form onSubmit={add} className="grid grid-cols-1 md:grid-cols-3 gap-2">
           <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
             <SelectTrigger><SelectValue /></SelectTrigger>
@@ -474,7 +519,14 @@ export const VendorsManager = ({ dealId }: { dealId: string }) => {
             <div key={v.id} className="flex items-center gap-3 border rounded p-2">
               <Badge variant="outline" className="text-[10px]">{v.category}</Badge>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium">{v.name}</p>
+                <p className="text-sm font-medium flex items-center gap-2">
+                  {v.name}
+                  {v.vendor_id && (
+                    <Link to={`/vendors/${v.vendor_id}`} className="text-[10px] text-accent hover:underline">
+                      directory ↗
+                    </Link>
+                  )}
+                </p>
                 <p className="text-xs text-muted-foreground">{[v.phone, v.email].filter(Boolean).join(" · ")}</p>
               </div>
               <Button size="sm" variant="ghost" onClick={() => remove(v.id)}><Trash2 className="h-4 w-4" /></Button>
