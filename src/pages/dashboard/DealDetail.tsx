@@ -21,6 +21,8 @@ import {
   PriceReductionManager, EsignManager, VendorsManager, RemindersManager,
 } from "@/components/dashboard/DealTransactionPanels";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
 
 const STAGES = [
   { key: "new_lead", label: "New Lead" },
