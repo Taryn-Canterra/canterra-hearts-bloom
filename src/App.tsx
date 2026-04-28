@@ -13,8 +13,15 @@ import Leads from "./pages/dashboard/Leads.tsx";
 import Deals from "./pages/dashboard/Deals.tsx";
 import NewDeal from "./pages/dashboard/NewDeal.tsx";
 import DealDetail from "./pages/dashboard/DealDetail.tsx";
+import AgentAITools from "./pages/dashboard/AgentAITools.tsx";
 import PortalHome from "./pages/portal/PortalHome.tsx";
 import PortalDeal from "./pages/portal/PortalDeal.tsx";
+import PortalCollections from "./pages/portal/PortalCollections.tsx";
+import PortalCollectionDetail from "./pages/portal/PortalCollectionDetail.tsx";
+import PortalSearches from "./pages/portal/PortalSearches.tsx";
+import Vendors from "./pages/Vendors.tsx";
+import VendorDetail from "./pages/VendorDetail.tsx";
+import SharedCollection from "./pages/SharedCollection.tsx";
 
 const queryClient = new QueryClient();
 
@@ -29,13 +36,20 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/listing/:id" element={<ListingDetail />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/vendors" element={<Vendors />} />
+            <Route path="/vendors/:id" element={<VendorDetail />} />
+            <Route path="/c/:token" element={<SharedCollection />} />
             <Route path="/dashboard" element={<DashboardOverview />} />
             <Route path="/dashboard/leads" element={<Leads />} />
             <Route path="/dashboard/deals" element={<Deals />} />
             <Route path="/dashboard/deals/new" element={<NewDeal />} />
             <Route path="/dashboard/deals/:id" element={<DealDetail />} />
+            <Route path="/dashboard/ai-tools" element={<AgentAITools />} />
             <Route path="/portal" element={<PortalHome />} />
             <Route path="/portal/deal/:id" element={<PortalDeal />} />
+            <Route path="/portal/collections" element={<PortalCollections />} />
+            <Route path="/portal/collections/:id" element={<PortalCollectionDetail />} />
+            <Route path="/portal/searches" element={<PortalSearches />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

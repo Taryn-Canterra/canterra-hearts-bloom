@@ -25,9 +25,9 @@ export const Header = () => {
           <a href="#how" className="text-foreground/80 transition-colors hover:text-primary">
             How it works
           </a>
-          <a href="#vendors" className="text-foreground/80 transition-colors hover:text-primary">
+          <Link to="/vendors" className="text-foreground/80 transition-colors hover:text-primary">
             Vendors
-          </a>
+          </Link>
           <a href="#agents" className="text-foreground/80 transition-colors hover:text-primary">
             For agents
           </a>

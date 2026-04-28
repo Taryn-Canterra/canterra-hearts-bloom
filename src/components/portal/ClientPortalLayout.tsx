@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Navigate, useLocation, Link } from "react-router-dom";
-import { LogOut, Home } from "lucide-react";
+import { LogOut, Home, FolderHeart, Search, Store } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 
@@ -27,8 +27,17 @@ export const ClientPortalLayout = ({ children }: { children: ReactNode }) => {
             <span className="font-display text-2xl font-semibold text-primary">Canterra</span>
             <span className="hidden text-xs uppercase tracking-[0.2em] text-muted-foreground sm:inline">Client Portal</span>
           </Link>
-          <div className="flex items-center gap-3 text-sm">
-            <span className="hidden sm:inline text-muted-foreground">{user?.email}</span>
+          <div className="flex items-center gap-1 sm:gap-3 text-sm">
+            <Link to="/portal/collections" className="hidden sm:inline-flex items-center gap-1.5 text-muted-foreground hover:text-primary px-2">
+              <FolderHeart className="h-4 w-4" /> Collections
+            </Link>
+            <Link to="/portal/searches" className="hidden sm:inline-flex items-center gap-1.5 text-muted-foreground hover:text-primary px-2">
+              <Search className="h-4 w-4" /> Searches
+            </Link>
+            <Link to="/vendors" className="hidden md:inline-flex items-center gap-1.5 text-muted-foreground hover:text-primary px-2">
+              <Store className="h-4 w-4" /> Vendors
+            </Link>
+            <span className="hidden lg:inline text-muted-foreground">{user?.email}</span>
             <Link to="/" className="text-muted-foreground hover:text-primary"><Home className="h-4 w-4" /></Link>
             <Button variant="ghost" size="sm" onClick={signOut}>
               <LogOut className="mr-2 h-4 w-4" /> Sign out
