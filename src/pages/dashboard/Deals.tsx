@@ -6,8 +6,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
+
+const STAGE_FILTERS: Record<string, { label: string; stages: string[] }> = {
+  open: {
+    label: "Open deals",
+    stages: ["new_lead", "qualified", "property_tour_or_listing_prep", "offer_drafted_or_listed"],
+  },
+  under_contract: {
+    label: "Under contract",
+    stages: ["offer_accepted_under_contract", "inspection_and_appraisal", "financing_and_title", "closing"],
+  },
+  closed_won: { label: "Closed won", stages: ["closed_won"] },
+};
 
 const STAGES: { key: string; label: string }[] = [
   { key: "new_lead", label: "New Lead" },
