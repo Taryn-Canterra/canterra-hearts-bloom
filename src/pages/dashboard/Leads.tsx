@@ -76,9 +76,16 @@ export default function Leads() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="font-display text-3xl font-semibold text-primary">Leads</h1>
-          <p className="text-muted-foreground">Property inquiries and saved-search signups.</p>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="font-display text-3xl font-semibold text-primary">Leads</h1>
+            <p className="text-muted-foreground">
+              Property inquiries and saved-search signups arrive here automatically. To add a client manually, create a deal.
+            </p>
+          </div>
+          <Link to="/dashboard/deals/new">
+            <Button>+ New deal from manual lead</Button>
+          </Link>
         </div>
 
         <Tabs defaultValue="inquiries">
