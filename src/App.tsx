@@ -14,6 +14,7 @@ import Deals from "./pages/dashboard/Deals.tsx";
 import NewDeal from "./pages/dashboard/NewDeal.tsx";
 import DealDetail from "./pages/dashboard/DealDetail.tsx";
 import AgentAITools from "./pages/dashboard/AgentAITools.tsx";
+import RoutingRules from "./pages/dashboard/RoutingRules.tsx";
 import PortalHome from "./pages/portal/PortalHome.tsx";
 import PortalDeal from "./pages/portal/PortalDeal.tsx";
 import PortalCollections from "./pages/portal/PortalCollections.tsx";
@@ -45,6 +46,7 @@ const App = () => (
             <Route path="/dashboard/deals/new" element={<NewDeal />} />
             <Route path="/dashboard/deals/:id" element={<DealDetail />} />
             <Route path="/dashboard/ai-tools" element={<AgentAITools />} />
+            <Route path="/dashboard/routing" element={<RoutingRules />} />
             <Route path="/portal" element={<PortalHome />} />
             <Route path="/portal/deal/:id" element={<PortalDeal />} />
             <Route path="/portal/collections" element={<PortalCollections />} />
