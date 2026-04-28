@@ -20,6 +20,8 @@ import { SellerListingActivity } from "@/components/portal/SellerListingActivity
 import { PriceReductionPanel } from "@/components/portal/PriceReductionPanel";
 import { EsignPanel } from "@/components/portal/EsignPanel";
 import { PostClosePanel } from "@/components/portal/PostClosePanel";
+import { ShowingRequestPanel } from "@/components/portal/ShowingRequestPanel";
+import { PropertyIntelligencePanel } from "@/components/portal/PropertyIntelligencePanel";
 
 const STAGE_GROUPS = [
   { key: "new_lead", label: "New Lead" },
@@ -173,6 +175,12 @@ export default function PortalDeal() {
 
         {/* Lender tracker (buyer only) */}
         {!isSeller && <LenderTracker deal={deal} />}
+
+        {/* Buyer-initiated showing requests */}
+        {!isSeller && <ShowingRequestPanel deal={deal} />}
+
+        {/* AI property intelligence (when a property is linked) */}
+        {property && <PropertyIntelligencePanel property={property} />}
 
         {/* Key dates / countdown */}
         <DeadlineList deal={deal} />
