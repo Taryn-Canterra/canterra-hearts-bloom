@@ -16,6 +16,7 @@ import { DealClientPanel } from "@/components/dashboard/DealClientPanel";
 import { DealKeyDatesEditor } from "@/components/dashboard/DealKeyDatesEditor";
 import { ContractExtractor } from "@/components/dashboard/ContractExtractor";
 import { DealDocumentsManager } from "@/components/dashboard/DealDocumentsManager";
+import { ClientViewPreview } from "@/components/dashboard/ClientViewPreview";
 import {
   ShowingsManager, OffersManager, LenderMilestonesManager,
   PriceReductionManager, EsignManager, VendorsManager, RemindersManager,
@@ -140,9 +141,12 @@ export default function DealDetail() {
                 <CardTitle className="font-display text-2xl">{deal.client_name}</CardTitle>
                 {deal.property_address && <p className="text-muted-foreground mt-1">{deal.property_address}</p>}
               </div>
-              <Button variant="ghost" size="sm" onClick={deleteDeal}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <ClientViewPreview dealId={id!} />
+                <Button variant="ghost" size="sm" onClick={deleteDeal}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </CardHeader>
           <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
