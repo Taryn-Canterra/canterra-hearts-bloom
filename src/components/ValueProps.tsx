@@ -1,4 +1,6 @@
 import { Sparkles, Eye, Database } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ConnectAgentDialog } from "@/components/ConnectAgentDialog";
 
 const ITEMS = [
   {
@@ -38,10 +40,23 @@ export const ValueProps = () => {
           <h2 className="mt-3 font-display text-4xl font-medium leading-[1.1] text-primary md:text-5xl">
             Generic portals filter by acreage <span className="italic text-accent">and hope for a barn.</span>
           </h2>
-          <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-            We built Canterra because eight acres with a falling-down loafing shed isn't the same
-            as eight acres with a six-stall center-aisle. Your search should know the difference.
-          </p>
+          <div className="mt-5 space-y-3 text-lg leading-relaxed text-muted-foreground">
+            <p>
+              We built Canterra because eight acres with a dilapidated loafing shed isn't the same
+              as eight acres with a six-stall center-aisle.
+            </p>
+            <p>Your agent should know the difference.</p>
+            <p>Now your search does too.</p>
+          </div>
+          <div className="mt-7">
+            <ConnectAgentDialog
+              trigger={
+                <Button size="lg" variant="default">
+                  Connect with a Canterra agent now
+                </Button>
+              }
+            />
+          </div>
         </div>
 
         <div className="mt-6 grid gap-6 md:grid-cols-3 md:gap-8">
