@@ -6,7 +6,7 @@ import listing5 from "@/assets/listing-5.jpg";
 import listing6 from "@/assets/listing-6.jpg";
 import galleryBarn from "@/assets/gallery-barn-interior.jpg";
 import galleryArena from "@/assets/gallery-arena.jpg";
-import galleryKitchen from "@/assets/gallery-kitchen.jpg";
+import galleryTackRoom from "@/assets/gallery-tack-room.jpg";
 import agentTaryn from "@/assets/agent-taryn.jpg";
 
 export interface Agent {
@@ -27,7 +27,7 @@ export const DEFAULT_AGENT: Agent = {
   photo: agentTaryn,
 };
 
-const COMMON_GALLERY = [galleryBarn, galleryArena, galleryKitchen];
+const COMMON_GALLERY = [galleryBarn, galleryArena, galleryTackRoom];
 
 export type EquineFeature =
   | "indoor_arena"
