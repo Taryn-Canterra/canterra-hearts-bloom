@@ -29,7 +29,7 @@ const ITEMS = [
 
 export const ValueProps = () => {
   return (
-    <section id="how" className="border-y border-border/60 bg-card py-24 md:py-32">
+    <section id="how" className="border-y border-border/60 bg-card py-16 md:py-20">
       <div className="container">
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
