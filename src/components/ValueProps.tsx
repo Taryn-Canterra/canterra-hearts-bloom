@@ -44,7 +44,7 @@ export const ValueProps = () => {
           </p>
         </div>
 
-        <div className="mt-16 grid gap-6 md:grid-cols-3 md:gap-8">
+        <div className="mt-10 grid gap-6 md:grid-cols-3 md:gap-8">
           {ITEMS.map(({ icon: Icon, eyebrow, title, body }) => (
             <div
               key={title}
