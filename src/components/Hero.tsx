@@ -24,7 +24,8 @@ export const Hero = () => {
             <span className="block italic text-primary-foreground/90">It's the barn that matters.</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-primary-foreground/85">
-            You scroll past the kitchen to find the barn. We did too — so we built the search that starts there.
+            You scroll past the kitchen to find the barn.
+            <span className="block">We did too — so we built the search that starts there.</span>
           </p>
         </div>
         <div className="mt-10">
