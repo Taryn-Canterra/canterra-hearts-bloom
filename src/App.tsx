@@ -8,6 +8,7 @@ import Index from "./pages/Index.tsx";
 import ListingDetail from "./pages/ListingDetail.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Auth from "./pages/Auth.tsx";
+import ResetPassword from "./pages/ResetPassword.tsx";
 import DashboardOverview from "./pages/dashboard/Overview.tsx";
 import Leads from "./pages/dashboard/Leads.tsx";
 import Deals from "./pages/dashboard/Deals.tsx";
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/listing/:id" element={<ListingDetail />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/vendors" element={<Vendors />} />
             <Route path="/vendors/:id" element={<VendorDetail />} />
             <Route path="/c/:token" element={<SharedCollection />} />
