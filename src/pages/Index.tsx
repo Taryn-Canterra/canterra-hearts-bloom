@@ -1,6 +1,6 @@
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
-import { ProofBand } from "@/components/ProofBand";
+
 import { ValueProps } from "@/components/ValueProps";
 import { SearchResults } from "@/components/SearchResults";
 import { AgentVendorTeasers } from "@/components/AgentVendorTeasers";
@@ -13,7 +13,7 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
-        <ProofBand />
+        
         <ValueProps />
         <SearchResults />
         <AgentVendorTeasers />
