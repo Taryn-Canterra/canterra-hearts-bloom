@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      buyer_leads: {
+        Row: {
+          bedrooms: number | null
+          county: string | null
+          created_at: string
+          email: string
+          id: string
+          max_price: number | null
+          min_acres: number | null
+          min_price: number | null
+          name: string
+          needs_financing: boolean
+          notes: string | null
+          phone: string
+          state: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          bedrooms?: number | null
+          county?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          max_price?: number | null
+          min_acres?: number | null
+          min_price?: number | null
+          name: string
+          needs_financing?: boolean
+          notes?: string | null
+          phone: string
+          state: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          bedrooms?: number | null
+          county?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          max_price?: number | null
+          min_acres?: number | null
+          min_price?: number | null
+          name?: string
+          needs_financing?: boolean
+          notes?: string | null
+          phone?: string
+          state?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       collection_items: {
         Row: {
           added_at: string
