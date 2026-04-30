@@ -21,10 +21,6 @@ export const ProofBand = () => {
             </div>
           ))}
         </div>
-        <p className="mt-12 text-center text-sm text-muted-foreground">
-          Built by <span className="font-medium text-primary">Horse &amp; Hearth Group</span> at eXp Realty —
-          horse owners, riders, and licensed Colorado agents.
-        </p>
       </div>
     </section>
   );
