@@ -3,7 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ChevronDown, SlidersHorizontal, Save } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
@@ -195,132 +195,177 @@ export const FilterSidebar = ({ resultCount }: Props) => {
         </div>
       </div>
 
-      {/* Equine filters — expanded by default */}
-      <Collapsible defaultOpen>
-        <CollapsibleTrigger className="group w-full flex items-center justify-between py-2 border-t border-border/60 pt-4">
-          <span className="text-sm font-semibold text-primary uppercase tracking-wider">Equine features</span>
-          <ChevronDown className="h-4 w-4 transition-transform group-data-[state=closed]:-rotate-90" />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="space-y-4 pt-3">
-          {/* Arena type */}
-          <div>
-            <label className="text-sm font-semibold">Arena type</label>
-            <div className="mt-1.5 grid grid-cols-2 gap-1.5">
-              {(Object.keys(ARENA_LABELS) as ArenaType[]).map((a) => (
-                <label key={a} className="flex items-center gap-2 text-xs">
-                  <Checkbox
-                    checked={filters.arenaTypes.includes(a)}
-                    onCheckedChange={() => toggleArr("arenaTypes" as any, a)}
-                  />
-                  {ARENA_LABELS[a]}
-                </label>
-              ))}
-            </div>
-          </div>
+      {/* Stalls — kept inline as a primary equine filter */}
+      <div className="border-t border-border/60 pt-4">
+        <div className="flex justify-between">
+          <label className="text-sm font-semibold">Stalls</label>
+          <span className="text-xs text-muted-foreground">{filters.stallCountMin}+</span>
+        </div>
+        <div className="mt-1.5 flex gap-1">
+          {[0, 2, 4, 6, 8, 10, 12].map((n) => (
+            <button
+              key={n}
+              onClick={() => searchFiltersStore.set({ stallCountMin: n })}
+              className={`flex-1 py-1 text-xs rounded border ${
+                filters.stallCountMin === n ? "bg-primary text-primary-foreground border-primary" : "border-border"
+              }`}
+            >{n === 0 ? "Any" : `${n}+`}</button>
+          ))}
+        </div>
+      </div>
 
-          {/* Stalls */}
-          <div>
-            <div className="flex justify-between">
-              <label className="text-sm font-semibold">Stalls</label>
-              <span className="text-xs text-muted-foreground">{filters.stallCountMin}+</span>
-            </div>
-            <div className="mt-1.5 flex gap-1">
-              {[0, 2, 4, 6, 8, 10, 12].map((n) => (
-                <button
-                  key={n}
-                  onClick={() => searchFiltersStore.set({ stallCountMin: n })}
-                  className={`flex-1 py-1 text-xs rounded border ${
-                    filters.stallCountMin === n ? "bg-primary text-primary-foreground border-primary" : "border-border"
-                  }`}
-                >{n === 0 ? "Any" : `${n}+`}</button>
-              ))}
-            </div>
-          </div>
-
-          {/* Pasture */}
-          <div>
-            <div className="flex justify-between">
-              <label className="text-sm font-semibold">Pasture acres</label>
-              <span className="text-xs text-muted-foreground">{filters.pastureAcresMin}+</span>
-            </div>
-            <Slider
-              className="mt-2"
-              value={[filters.pastureAcresMin]}
-              onValueChange={([v]) => searchFiltersStore.set({ pastureAcresMin: v })}
-              min={0}
-              max={50}
-              step={1}
-            />
-          </div>
-
-          {/* Toggles */}
-          <div className="space-y-2.5">
-            {[
-              ["irrigated", "Irrigated acreage"],
-              ["hayProduction", "Hay production"],
-              ["waterRights", "Water rights"],
-              ["hunting", "Hunting / GMU access"],
-              ["conservationEasement", "Conservation easement"],
-            ].map(([key, label]) => (
-              <div key={key} className="flex items-center justify-between text-sm">
-                <span>{label}</span>
-                <Switch
-                  checked={(filters as any)[key]}
-                  onCheckedChange={(v) => searchFiltersStore.set({ [key]: v } as any)}
-                />
+      {/* Equine features — single dropdown checklist */}
+      {(() => {
+        const featureCount =
+          filters.arenaTypes.length +
+          filters.fencing.length +
+          filters.facilities.length +
+          filters.views.length +
+          ["irrigated", "hayProduction", "waterRights", "hunting", "conservationEasement"].filter(
+            (k) => (filters as any)[k]
+          ).length;
+        return (
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className="w-full flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2.5 text-sm hover:border-primary transition-colors"
+              >
+                <span className="font-semibold text-primary uppercase tracking-wider text-xs">
+                  Equine features
+                </span>
+                <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                  {featureCount > 0 ? `${featureCount} selected` : "Any"}
+                  <ChevronDown className="h-4 w-4" />
+                </span>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="start"
+              className="z-50 w-[min(92vw,22rem)] max-h-[70vh] overflow-y-auto bg-popover p-4 space-y-4"
+            >
+              <div>
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Arena</label>
+                <div className="mt-1.5 grid grid-cols-2 gap-1.5">
+                  {(Object.keys(ARENA_LABELS) as ArenaType[]).map((a) => (
+                    <label key={a} className="flex items-center gap-2 text-xs">
+                      <Checkbox
+                        checked={filters.arenaTypes.includes(a)}
+                        onCheckedChange={() => toggleArr("arenaTypes" as any, a)}
+                      />
+                      {ARENA_LABELS[a]}
+                    </label>
+                  ))}
+                </div>
               </div>
-            ))}
-          </div>
 
-          {/* Fencing */}
-          <div>
-            <label className="text-sm font-semibold">Fencing</label>
-            <div className="mt-1.5 grid grid-cols-2 gap-1.5">
-              {(Object.keys(FENCING_LABELS) as FencingType[]).map((f) => (
-                <label key={f} className="flex items-center gap-2 text-xs">
-                  <Checkbox
-                    checked={filters.fencing.includes(f)}
-                    onCheckedChange={() => toggleArr("fencing" as any, f)}
-                  />
-                  {FENCING_LABELS[f]}
-                </label>
-              ))}
-            </div>
-          </div>
+              <div>
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Facilities</label>
+                <div className="mt-1.5 grid grid-cols-2 gap-1.5">
+                  {(Object.keys(FACILITY_LABELS) as FacilityType[]).map((f) => (
+                    <label key={f} className="flex items-center gap-2 text-xs">
+                      <Checkbox
+                        checked={filters.facilities.includes(f)}
+                        onCheckedChange={() => toggleArr("facilities" as any, f)}
+                      />
+                      {FACILITY_LABELS[f]}
+                    </label>
+                  ))}
+                </div>
+              </div>
 
-          {/* Facilities */}
-          <div>
-            <label className="text-sm font-semibold">Facilities</label>
-            <div className="mt-1.5 grid grid-cols-2 gap-1.5">
-              {(Object.keys(FACILITY_LABELS) as FacilityType[]).map((f) => (
-                <label key={f} className="flex items-center gap-2 text-xs">
-                  <Checkbox
-                    checked={filters.facilities.includes(f)}
-                    onCheckedChange={() => toggleArr("facilities" as any, f)}
-                  />
-                  {FACILITY_LABELS[f]}
-                </label>
-              ))}
-            </div>
-          </div>
+              <div>
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Fencing</label>
+                <div className="mt-1.5 grid grid-cols-2 gap-1.5">
+                  {(Object.keys(FENCING_LABELS) as FencingType[]).map((f) => (
+                    <label key={f} className="flex items-center gap-2 text-xs">
+                      <Checkbox
+                        checked={filters.fencing.includes(f)}
+                        onCheckedChange={() => toggleArr("fencing" as any, f)}
+                      />
+                      {FENCING_LABELS[f]}
+                    </label>
+                  ))}
+                </div>
+              </div>
 
-          {/* Views */}
-          <div>
-            <label className="text-sm font-semibold">Views</label>
-            <div className="mt-1.5 grid grid-cols-2 gap-1.5">
-              {(Object.keys(VIEW_LABELS) as ViewType[]).map((v) => (
-                <label key={v} className="flex items-center gap-2 text-xs">
-                  <Checkbox
-                    checked={filters.views.includes(v)}
-                    onCheckedChange={() => toggleArr("views" as any, v)}
+              <div>
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Views</label>
+                <div className="mt-1.5 grid grid-cols-2 gap-1.5">
+                  {(Object.keys(VIEW_LABELS) as ViewType[]).map((v) => (
+                    <label key={v} className="flex items-center gap-2 text-xs">
+                      <Checkbox
+                        checked={filters.views.includes(v)}
+                        onCheckedChange={() => toggleArr("views" as any, v)}
+                      />
+                      {VIEW_LABELS[v]}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Land</label>
+                <div className="mt-2 space-y-2">
+                  {[
+                    ["irrigated", "Irrigated acreage"],
+                    ["hayProduction", "Hay production"],
+                    ["waterRights", "Water rights"],
+                    ["hunting", "Hunting / GMU access"],
+                    ["conservationEasement", "Conservation easement"],
+                  ].map(([key, label]) => (
+                    <div key={key} className="flex items-center justify-between text-sm">
+                      <span>{label}</span>
+                      <Switch
+                        checked={(filters as any)[key]}
+                        onCheckedChange={(v) => searchFiltersStore.set({ [key]: v } as any)}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-3">
+                  <div className="flex justify-between">
+                    <label className="text-sm">Pasture acres</label>
+                    <span className="text-xs text-muted-foreground">{filters.pastureAcresMin}+</span>
+                  </div>
+                  <Slider
+                    className="mt-2"
+                    value={[filters.pastureAcresMin]}
+                    onValueChange={([v]) => searchFiltersStore.set({ pastureAcresMin: v })}
+                    min={0}
+                    max={50}
+                    step={1}
                   />
-                  {VIEW_LABELS[v]}
-                </label>
-              ))}
-            </div>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
+                </div>
+              </div>
+
+              {featureCount > 0 && (
+                <div className="flex justify-end border-t border-border/60 pt-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      searchFiltersStore.set({
+                        arenaTypes: [],
+                        fencing: [],
+                        facilities: [],
+                        views: [],
+                        irrigated: false,
+                        hayProduction: false,
+                        waterRights: false,
+                        hunting: false,
+                        conservationEasement: false,
+                      })
+                    }
+                    className="text-xs font-medium uppercase tracking-wider text-accent hover:underline"
+                  >
+                    Clear features
+                  </button>
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
+        );
+      })()}
 
       {/* Save search */}
       <div className="border-t border-border/60 pt-4 space-y-2">
