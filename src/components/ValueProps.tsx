@@ -1,55 +1,90 @@
-import { Sparkles, Database, Eye, Bell } from "lucide-react";
+import { Sparkles, Eye, Bell, Database } from "lucide-react";
 
-const FEATURES = [
-  {
-    icon: Database,
-    title: "100% IDX coverage",
-    body: "Every active listing in REcolorado and Pikes Peak MLS — not a pay-to-list directory.",
-  },
+const ROWS = [
   {
     icon: Sparkles,
-    title: "AI photo tagging",
-    body: "Computer vision detects stalls, arenas, wash racks, and round pens — even when the listing description forgets to mention them.",
+    eyebrow: "Computer vision",
+    title: "It sees what the listing description misses.",
+    body: "Our AI scans every photo and detects stalls, arenas, wash racks, round pens, and run-in sheds — even when the agent only wrote 'outbuildings, see remarks.'",
+    stat: "47",
+    statLabel: "equine features tagged per property",
   },
   {
     icon: Eye,
-    title: "Equine vocabulary",
-    body: "Search 'foaling stall' or 'wash rack' and find them — even when the agent wrote 'birthing stall' or 'shower stall'.",
+    eyebrow: "Equine vocabulary",
+    title: "Search like a horse person, not a database.",
+    body: "Type 'foaling stall' and find one — even when the listing says 'birthing pen.' Canterra speaks barn, paddock, and pasture fluently in three dialects.",
+    stat: "300+",
+    statLabel: "synonyms mapped to MLS fields",
+  },
+  {
+    icon: Database,
+    eyebrow: "Full MLS coverage",
+    title: "Every active listing. Not the ones that paid to be here.",
+    body: "Direct IDX feeds from REcolorado and Pikes Peak MLS. If it's on the market in Colorado, it's on Canterra — no pay-to-list directory, no missing inventory.",
+    stat: "100%",
+    statLabel: "of active CO horse properties",
   },
   {
     icon: Bell,
-    title: "Magic-link alerts",
-    body: "Save a search, get an email the moment a match hits the MLS. No password to forget.",
+    eyebrow: "Magic-link alerts",
+    title: "Be the first call your agent gets to make.",
+    body: "Save a search, get an email the moment a match hits the MLS. No password to forget, no daily refresh — the right barn finds you.",
+    stat: "<5min",
+    statLabel: "from MLS to your inbox",
   },
 ];
 
 export const ValueProps = () => {
   return (
-    <section id="how" className="border-y border-border/60 bg-card py-20 md:py-28">
+    <section id="how" className="border-y border-border/60 bg-card py-24 md:py-32">
       <div className="container">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+          <span className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
             Why Canterra
           </span>
-          <h2 className="mt-3 font-display text-4xl font-medium text-primary md:text-5xl">
-            Built for the way horse people actually search.
+          <h2 className="mt-3 font-display text-4xl font-medium leading-[1.1] text-primary md:text-5xl">
+            Generic portals filter by acreage <span className="italic text-accent">and hope for a barn.</span>
           </h2>
-          <p className="mt-4 text-muted-foreground">
-            Generic portals filter by acreage and hope for a barn. Canterra knows the difference
-            between a run-in shed and a foaling stall.
+          <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
+            We built Canterra because eight acres with a falling-down loafing shed isn't the same
+            as eight acres with a six-stall center-aisle. Your search should know the difference.
           </p>
         </div>
-        <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {FEATURES.map(({ icon: Icon, title, body }) => (
+
+        <div className="mt-20 space-y-20 md:space-y-28">
+          {ROWS.map(({ icon: Icon, eyebrow, title, body, stat, statLabel }, idx) => (
             <div
               key={title}
-              className="group rounded-2xl border border-border/70 bg-background p-6 transition-smooth hover:border-accent/40 hover:shadow-card"
+              className={`grid items-center gap-10 md:grid-cols-12 md:gap-16 ${
+                idx % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""
+              }`}
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-forest text-primary-foreground transition-transform group-hover:scale-105">
-                <Icon className="h-5 w-5" />
+              <div className="md:col-span-5">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-forest text-primary-foreground shadow-soft">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <div className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+                  {eyebrow}
+                </div>
+                <h3 className="mt-3 font-display text-3xl font-medium leading-[1.15] text-primary md:text-4xl">
+                  {title}
+                </h3>
+                <p className="mt-4 text-base leading-relaxed text-muted-foreground">{body}</p>
               </div>
-              <h3 className="mt-5 font-display text-xl font-medium text-primary">{title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{body}</p>
+              <div className="md:col-span-7">
+                <div className="relative overflow-hidden rounded-3xl border border-border/70 bg-background p-10 shadow-card md:p-14">
+                  <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-gradient-forest opacity-[0.06] blur-2xl" />
+                  <div className="relative">
+                    <div className="font-display text-7xl font-medium leading-none text-primary md:text-8xl">
+                      {stat}
+                    </div>
+                    <div className="mt-4 max-w-xs text-sm uppercase tracking-[0.18em] text-muted-foreground">
+                      {statLabel}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
