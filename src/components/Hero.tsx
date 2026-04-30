@@ -12,6 +12,7 @@ export const Hero = () => {
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-hero" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-background via-background/70 to-transparent" />
       <div className="relative container flex min-h-[640px] flex-col justify-end pb-16 pt-32 md:pb-24 md:pt-40">
         <div className="max-w-3xl">
           <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-primary-foreground backdrop-blur-sm">
