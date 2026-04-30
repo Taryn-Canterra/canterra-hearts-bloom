@@ -17,7 +17,7 @@ export const AgentVendorTeasers = () => {
                 For agents
               </span>
               <h3 className="mt-4 font-display text-3xl font-medium leading-[1.15] md:text-4xl">
-                Stop competing on Zestimates. <span className="italic">Compete on horse sense.</span>
+                Stop competing on price-per-square-foot. <span className="italic">Compete on horse sense.</span>
               </h3>
               <p className="mt-4 max-w-md text-primary-foreground/80">
                 Claim your equine listings, run AI-powered property intelligence, and route warm
