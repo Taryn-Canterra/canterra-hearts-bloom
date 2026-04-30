@@ -7,9 +7,9 @@ const STATS = [
 
 export const ProofBand = () => {
   return (
-    <section className="border-y border-border/60 bg-gradient-warm py-10 md:py-12">
+    <section className="border-y border-border/60 bg-gradient-warm py-6 md:py-8">
       <div className="container">
-        <div className="grid grid-cols-2 gap-y-10 md:grid-cols-4 md:gap-x-8">
+        <div className="grid grid-cols-2 gap-y-6 md:grid-cols-4 md:gap-x-8">
           {STATS.map(({ value, label }) => (
             <div key={label} className="text-center md:border-r md:border-border/60 md:px-4 md:last:border-r-0">
               <div className="font-display text-4xl font-medium text-primary md:text-5xl">
