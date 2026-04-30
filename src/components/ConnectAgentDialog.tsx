@@ -157,16 +157,16 @@ export const ConnectAgentDialog = ({ trigger }: ConnectAgentDialogProps) => {
             </div>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="min_price">Min price</Label>
-                <Input id="min_price" inputMode="numeric" value={form.min_price} onChange={(e) => update("min_price", e.target.value)} placeholder="$500,000" />
+                <Label htmlFor="min_acres">Min acres</Label>
+                <Input id="min_acres" inputMode="numeric" value={form.min_acres} onChange={(e) => update("min_acres", e.target.value)} placeholder="5" />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="max_price">Max price</Label>
                 <Input id="max_price" inputMode="numeric" value={form.max_price} onChange={(e) => update("max_price", e.target.value)} placeholder="$1,500,000" />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="min_acres">Min acres</Label>
-                <Input id="min_acres" inputMode="numeric" value={form.min_acres} onChange={(e) => update("min_acres", e.target.value)} placeholder="5" />
+                <Label htmlFor="min_stalls">Min stalls</Label>
+                <Input id="min_stalls" inputMode="numeric" value={form.min_stalls} onChange={(e) => update("min_stalls", e.target.value)} placeholder="4" />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="bedrooms">Bedrooms</Label>
