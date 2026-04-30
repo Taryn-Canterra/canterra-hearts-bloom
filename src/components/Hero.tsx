@@ -24,8 +24,7 @@ export const Hero = () => {
             <span className="block italic text-primary-foreground/90">It's the barn that matters.</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-primary-foreground/85">
-            Canterra reads every Colorado MLS listing the way a horse person would —
-            spotting wash racks, foaling stalls, and round pens the listing agent forgot to mention.
+            You scroll past the kitchen to find the barn. We did too — so we built the search that starts there.
           </p>
         </div>
         <div className="mt-10">
