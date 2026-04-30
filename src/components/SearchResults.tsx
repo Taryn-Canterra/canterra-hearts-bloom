@@ -38,7 +38,7 @@ export const SearchResults = () => {
   }, [filters, sort, listings]);
 
   return (
-    <section id="search" className="bg-gradient-warm py-16 md:py-24">
+    <section id="search" className="bg-gradient-warm py-12 md:py-16">
       <div className="container">
         <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div>
