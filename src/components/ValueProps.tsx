@@ -1,6 +1,6 @@
-import { Sparkles, Eye, Bell, Database } from "lucide-react";
+import { Sparkles, Eye, Database } from "lucide-react";
 
-const ROWS = [
+const ITEMS = [
   {
     icon: Sparkles,
     eyebrow: "Computer vision",
@@ -25,14 +25,6 @@ const ROWS = [
     stat: "100%",
     statLabel: "of active CO horse properties",
   },
-  {
-    icon: Bell,
-    eyebrow: "Magic-link alerts",
-    title: "Be the first call your agent gets to make.",
-    body: "Save a search, get an email the moment a match hits the MLS. No password to forget, no daily refresh — the right barn finds you.",
-    stat: "<5min",
-    statLabel: "from MLS to your inbox",
-  },
 ];
 
 export const ValueProps = () => {
@@ -52,38 +44,31 @@ export const ValueProps = () => {
           </p>
         </div>
 
-        <div className="mt-20 space-y-20 md:space-y-28">
-          {ROWS.map(({ icon: Icon, eyebrow, title, body, stat, statLabel }, idx) => (
+        <div className="mt-16 grid gap-6 md:grid-cols-3 md:gap-8">
+          {ITEMS.map(({ icon: Icon, eyebrow, title, body, stat, statLabel }) => (
             <div
               key={title}
-              className={`grid items-center gap-10 md:grid-cols-12 md:gap-16 ${
-                idx % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""
-              }`}
+              className="group relative flex flex-col rounded-3xl border border-border/70 bg-background p-8 shadow-card transition-smooth hover:-translate-y-1 hover:border-accent/40 hover:shadow-elevated"
             >
-              <div className="md:col-span-5">
+              <div className="flex items-center justify-between">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-forest text-primary-foreground shadow-soft">
                   <Icon className="h-5 w-5" />
                 </div>
-                <div className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
-                  {eyebrow}
-                </div>
-                <h3 className="mt-3 font-display text-3xl font-medium leading-[1.15] text-primary md:text-4xl">
-                  {title}
-                </h3>
-                <p className="mt-4 text-base leading-relaxed text-muted-foreground">{body}</p>
-              </div>
-              <div className="md:col-span-7">
-                <div className="relative overflow-hidden rounded-3xl border border-border/70 bg-background p-10 shadow-card md:p-14">
-                  <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-gradient-forest opacity-[0.06] blur-2xl" />
-                  <div className="relative">
-                    <div className="font-display text-7xl font-medium leading-none text-primary md:text-8xl">
-                      {stat}
-                    </div>
-                    <div className="mt-4 max-w-xs text-sm uppercase tracking-[0.18em] text-muted-foreground">
-                      {statLabel}
-                    </div>
+                <div className="text-right">
+                  <div className="font-display text-4xl font-medium leading-none text-primary">
+                    {stat}
                   </div>
                 </div>
+              </div>
+              <div className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+                {eyebrow}
+              </div>
+              <h3 className="mt-2 font-display text-xl font-medium leading-snug text-primary">
+                {title}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{body}</p>
+              <div className="mt-6 border-t border-border/60 pt-4 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                {statLabel}
               </div>
             </div>
           ))}
