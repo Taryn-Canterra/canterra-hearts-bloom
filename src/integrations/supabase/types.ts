@@ -23,7 +23,7 @@ export type Database = {
           id: string
           max_price: number | null
           min_acres: number | null
-          min_price: number | null
+          min_stalls: number | null
           name: string
           needs_financing: boolean
           notes: string | null
@@ -40,7 +40,7 @@ export type Database = {
           id?: string
           max_price?: number | null
           min_acres?: number | null
-          min_price?: number | null
+          min_stalls?: number | null
           name: string
           needs_financing?: boolean
           notes?: string | null
@@ -57,7 +57,7 @@ export type Database = {
           id?: string
           max_price?: number | null
           min_acres?: number | null
-          min_price?: number | null
+          min_stalls?: number | null
           name?: string
           needs_financing?: boolean
           notes?: string | null

@@ -23,9 +23,9 @@ const leadSchema = z.object({
   phone: z.string().trim().min(7, "Phone is required").max(30),
   state: z.string().trim().min(2, "State is required").max(50),
   county: z.string().trim().max(100).optional().or(z.literal("")),
-  min_price: z.string().max(20).optional().or(z.literal("")),
   max_price: z.string().max(20).optional().or(z.literal("")),
   min_acres: z.string().max(20).optional().or(z.literal("")),
+  min_stalls: z.string().max(20).optional().or(z.literal("")),
   bedrooms: z.string().max(10).optional().or(z.literal("")),
   notes: z.string().max(1000).optional().or(z.literal("")),
   needs_financing: z.boolean(),
@@ -45,9 +45,9 @@ export const ConnectAgentDialog = ({ trigger }: ConnectAgentDialogProps) => {
     phone: "",
     state: "CO",
     county: "",
-    min_price: "",
     max_price: "",
     min_acres: "",
+    min_stalls: "",
     bedrooms: "",
     notes: "",
     needs_financing: false,
@@ -77,9 +77,9 @@ export const ConnectAgentDialog = ({ trigger }: ConnectAgentDialogProps) => {
       phone: parsed.data.phone,
       state: parsed.data.state,
       county: parsed.data.county || null,
-      min_price: toNum(parsed.data.min_price ?? ""),
       max_price: toNum(parsed.data.max_price ?? ""),
       min_acres: toNum(parsed.data.min_acres ?? ""),
+      min_stalls: toNum(parsed.data.min_stalls ?? ""),
       bedrooms: parsed.data.bedrooms ? Number(parsed.data.bedrooms) : null,
       notes: parsed.data.notes || null,
       needs_financing: parsed.data.needs_financing,
@@ -106,9 +106,9 @@ export const ConnectAgentDialog = ({ trigger }: ConnectAgentDialogProps) => {
       phone: "",
       state: "CO",
       county: "",
-      min_price: "",
       max_price: "",
       min_acres: "",
+      min_stalls: "",
       bedrooms: "",
       notes: "",
       needs_financing: false,
@@ -157,16 +157,16 @@ export const ConnectAgentDialog = ({ trigger }: ConnectAgentDialogProps) => {
             </div>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="min_price">Min price</Label>
-                <Input id="min_price" inputMode="numeric" value={form.min_price} onChange={(e) => update("min_price", e.target.value)} placeholder="$500,000" />
+                <Label htmlFor="min_acres">Min acres</Label>
+                <Input id="min_acres" inputMode="numeric" value={form.min_acres} onChange={(e) => update("min_acres", e.target.value)} placeholder="5" />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="max_price">Max price</Label>
                 <Input id="max_price" inputMode="numeric" value={form.max_price} onChange={(e) => update("max_price", e.target.value)} placeholder="$1,500,000" />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="min_acres">Min acres</Label>
-                <Input id="min_acres" inputMode="numeric" value={form.min_acres} onChange={(e) => update("min_acres", e.target.value)} placeholder="5" />
+                <Label htmlFor="min_stalls">Min stalls</Label>
+                <Input id="min_stalls" inputMode="numeric" value={form.min_stalls} onChange={(e) => update("min_stalls", e.target.value)} placeholder="4" />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="bedrooms">Bedrooms</Label>
