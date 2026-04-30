@@ -45,20 +45,13 @@ export const ValueProps = () => {
         </div>
 
         <div className="mt-16 grid gap-6 md:grid-cols-3 md:gap-8">
-          {ITEMS.map(({ icon: Icon, eyebrow, title, body, stat, statLabel }) => (
+          {ITEMS.map(({ icon: Icon, eyebrow, title, body }) => (
             <div
               key={title}
               className="group relative flex flex-col rounded-3xl border border-border/70 bg-background p-8 shadow-card transition-smooth hover:-translate-y-1 hover:border-accent/40 hover:shadow-elevated"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-forest text-primary-foreground shadow-soft">
-                  <Icon className="h-5 w-5" />
-                </div>
-                <div className="text-right">
-                  <div className="font-display text-4xl font-medium leading-none text-primary">
-                    {stat}
-                  </div>
-                </div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-forest text-primary-foreground shadow-soft">
+                <Icon className="h-5 w-5" />
               </div>
               <div className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
                 {eyebrow}
@@ -67,9 +60,6 @@ export const ValueProps = () => {
                 {title}
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{body}</p>
-              <div className="mt-6 border-t border-border/60 pt-4 text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                {statLabel}
-              </div>
             </div>
           ))}
         </div>
