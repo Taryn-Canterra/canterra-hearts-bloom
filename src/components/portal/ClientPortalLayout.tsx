@@ -28,6 +28,9 @@ export const ClientPortalLayout = ({ children }: { children: ReactNode }) => {
             <span className="hidden text-xs uppercase tracking-[0.2em] text-muted-foreground sm:inline">Client Portal</span>
           </Link>
           <div className="flex items-center gap-1 sm:gap-3 text-sm">
+            <Link to="/portal/calendar" className="hidden sm:inline-flex items-center gap-1.5 text-muted-foreground hover:text-primary px-2">
+              <CalendarDays className="h-4 w-4" /> Calendar
+            </Link>
             <Link to="/portal/collections" className="hidden sm:inline-flex items-center gap-1.5 text-muted-foreground hover:text-primary px-2">
               <FolderHeart className="h-4 w-4" /> Collections
             </Link>
