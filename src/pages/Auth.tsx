@@ -24,7 +24,7 @@ export default function Auth() {
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setForgotSubmitting(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail.trim().toLowerCase(), {
       redirectTo: `${window.location.origin}/reset-password`,
     });
     setForgotSubmitting(false);
@@ -45,7 +45,10 @@ export default function Auth() {
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim().toLowerCase(),
+      password,
+    });
     setSubmitting(false);
     if (error) toast.error(error.message);
     else navigate("/dashboard");
@@ -55,7 +58,7 @@ export default function Auth() {
     e.preventDefault();
     setSubmitting(true);
     const { error } = await supabase.auth.signUp({
-      email,
+      email: email.trim().toLowerCase(),
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/dashboard`,
