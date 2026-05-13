@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, Inbox, Briefcase, LogOut, Home, Sparkles, Store, Settings, BadgeCheck } from "lucide-react";
+import { LayoutDashboard, Inbox, Briefcase, LogOut, Home, Sparkles, Store, Settings, BadgeCheck, CalendarDays } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { NavLink } from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
