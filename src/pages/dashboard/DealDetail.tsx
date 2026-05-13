@@ -233,7 +233,7 @@ export default function DealDetail() {
 
           <TabsContent value="transaction" className="space-y-6 mt-4">
             <ContractExtractor deal={deal} onSaved={load} />
-            <DealKeyDatesEditor deal={deal} onSaved={load} />
+            <DealDeadlineCalendar deal={deal} />
             {deal.side === "seller" && <ShowingsManager dealId={id!} />}
             <OffersManager dealId={id!} isSeller={deal.side === "seller"} />
             {deal.side === "seller" && <PriceReductionManager deal={deal} onSaved={load} />}
