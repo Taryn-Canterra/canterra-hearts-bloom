@@ -56,7 +56,7 @@ export default function ResetPassword() {
             <CardTitle>Set a new password</CardTitle>
             <CardDescription>
               {ready
-                ? "Enter and confirm your new password below."
+                ? "You're signed in via your reset link. Enter a new password below to finish — if you leave this page without saving, the link will expire and you'll need to request a new one."
                 : "Validating your reset link…"}
             </CardDescription>
           </CardHeader>
