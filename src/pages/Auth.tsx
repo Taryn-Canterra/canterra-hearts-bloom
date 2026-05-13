@@ -58,7 +58,7 @@ export default function Auth() {
     e.preventDefault();
     setSubmitting(true);
     const { error } = await supabase.auth.signUp({
-      email,
+      email: email.trim().toLowerCase(),
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/dashboard`,
