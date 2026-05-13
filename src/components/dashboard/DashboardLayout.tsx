@@ -23,6 +23,7 @@ const items = [
   { title: "Overview", url: "/dashboard", icon: LayoutDashboard, end: true },
   { title: "Leads", url: "/dashboard/leads", icon: Inbox },
   { title: "Deals", url: "/dashboard/deals", icon: Briefcase },
+  { title: "Calendar", url: "/dashboard/calendar", icon: CalendarDays },
   { title: "AI tools", url: "/dashboard/ai-tools", icon: Sparkles },
   { title: "Vendors", url: "/vendors", icon: Store },
   { title: "Routing rules", url: "/dashboard/routing", icon: Settings, adminOnly: true },
