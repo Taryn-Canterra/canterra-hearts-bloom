@@ -183,7 +183,7 @@ export default function PortalDeal() {
         {property && <PropertyIntelligencePanel property={property} />}
 
         {/* Key dates / countdown */}
-        <DeadlineList deal={deal} />
+        <DealDeadlineCalendar deal={deal} />
 
         {/* E-sign */}
         <EsignPanel deal={deal} />
