@@ -13,8 +13,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Trash2, ArrowLeft } from "lucide-react";
 import { DealClientPanel } from "@/components/dashboard/DealClientPanel";
-import { DealKeyDatesEditor } from "@/components/dashboard/DealKeyDatesEditor";
 import { ContractExtractor } from "@/components/dashboard/ContractExtractor";
+import { DealDeadlineCalendar } from "@/components/DealDeadlineCalendar";
 import { DealDocumentsManager } from "@/components/dashboard/DealDocumentsManager";
 import { ClientViewPreview } from "@/components/dashboard/ClientViewPreview";
 import {
