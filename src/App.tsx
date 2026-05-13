@@ -14,6 +14,8 @@ import Leads from "./pages/dashboard/Leads.tsx";
 import Deals from "./pages/dashboard/Deals.tsx";
 import NewDeal from "./pages/dashboard/NewDeal.tsx";
 import DealDetail from "./pages/dashboard/DealDetail.tsx";
+import DashboardCalendar from "./pages/dashboard/Calendar.tsx";
+import PortalCalendar from "./pages/portal/PortalCalendar.tsx";
 import AgentAITools from "./pages/dashboard/AgentAITools.tsx";
 import RoutingRules from "./pages/dashboard/RoutingRules.tsx";
 import ListingClaims from "./pages/dashboard/ListingClaims.tsx";
@@ -48,10 +50,12 @@ const App = () => (
             <Route path="/dashboard/deals" element={<Deals />} />
             <Route path="/dashboard/deals/new" element={<NewDeal />} />
             <Route path="/dashboard/deals/:id" element={<DealDetail />} />
+            <Route path="/dashboard/calendar" element={<DashboardCalendar />} />
             <Route path="/dashboard/ai-tools" element={<AgentAITools />} />
             <Route path="/dashboard/routing" element={<RoutingRules />} />
             <Route path="/dashboard/claims" element={<ListingClaims />} />
             <Route path="/portal" element={<PortalHome />} />
+            <Route path="/portal/calendar" element={<PortalCalendar />} />
             <Route path="/portal/deal/:id" element={<PortalDeal />} />
             <Route path="/portal/collections" element={<PortalCollections />} />
             <Route path="/portal/collections/:id" element={<PortalCollectionDetail />} />
