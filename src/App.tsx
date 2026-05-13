@@ -55,6 +55,7 @@ const App = () => (
             <Route path="/dashboard/routing" element={<RoutingRules />} />
             <Route path="/dashboard/claims" element={<ListingClaims />} />
             <Route path="/portal" element={<PortalHome />} />
+            <Route path="/portal/calendar" element={<PortalCalendar />} />
             <Route path="/portal/deal/:id" element={<PortalDeal />} />
             <Route path="/portal/collections" element={<PortalCollections />} />
             <Route path="/portal/collections/:id" element={<PortalCollectionDetail />} />
