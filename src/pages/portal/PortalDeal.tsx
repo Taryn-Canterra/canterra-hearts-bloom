@@ -13,7 +13,7 @@ import { ArrowLeft, Check, Circle, Download, FileUp, Trash2 } from "lucide-react
 import { resolveDisplayStage } from "@/lib/dealDeadlines";
 import { StageProgress } from "@/components/portal/StageProgress";
 import { DeadlineBanner } from "@/components/portal/DeadlineBanner";
-import { DeadlineList } from "@/components/portal/DeadlineList";
+import { DealDeadlineCalendar } from "@/components/DealDeadlineCalendar";
 import { LenderTracker } from "@/components/portal/LenderTracker";
 import { OffersPanel } from "@/components/portal/OffersPanel";
 import { SellerListingActivity } from "@/components/portal/SellerListingActivity";
@@ -183,7 +183,7 @@ export default function PortalDeal() {
         {property && <PropertyIntelligencePanel property={property} />}
 
         {/* Key dates / countdown */}
-        <DeadlineList deal={deal} />
+        <DealDeadlineCalendar deal={deal} />
 
         {/* E-sign */}
         <EsignPanel deal={deal} />
