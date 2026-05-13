@@ -14,6 +14,8 @@ import Leads from "./pages/dashboard/Leads.tsx";
 import Deals from "./pages/dashboard/Deals.tsx";
 import NewDeal from "./pages/dashboard/NewDeal.tsx";
 import DealDetail from "./pages/dashboard/DealDetail.tsx";
+import DashboardCalendar from "./pages/dashboard/Calendar.tsx";
+import PortalCalendar from "./pages/portal/PortalCalendar.tsx";
 import AgentAITools from "./pages/dashboard/AgentAITools.tsx";
 import RoutingRules from "./pages/dashboard/RoutingRules.tsx";
 import ListingClaims from "./pages/dashboard/ListingClaims.tsx";
