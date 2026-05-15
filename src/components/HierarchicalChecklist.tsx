@@ -152,17 +152,21 @@ export const HierarchicalChecklist = ({ dealId, readOnly = false, clientVisibleO
                       className="border rounded-md"
                     >
                       <div className="flex items-start gap-3 p-3">
-                        {readOnly ? (
-                          task.completed
-                            ? <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                            : <Circle className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-                        ) : (
-                          <Checkbox
-                            checked={task.completed}
-                            onCheckedChange={() => toggleItem(task)}
-                            className="mt-0.5"
-                          />
-                        )}
+                        {(() => {
+                          const clientCanCheck = readOnly && assignedParty?.user_id === currentUserId;
+                          if (readOnly && !clientCanCheck) {
+                            return task.completed
+                              ? <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                              : <Circle className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />;
+                          }
+                          return (
+                            <Checkbox
+                              checked={task.completed}
+                              onCheckedChange={() => toggleItem(task)}
+                              className="mt-0.5"
+                            />
+                          );
+                        })()}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start gap-2 flex-wrap">
                             <CollapsibleTrigger className="group flex items-center gap-1 text-left flex-1 min-w-0">
@@ -215,10 +219,27 @@ export const HierarchicalChecklist = ({ dealId, readOnly = false, clientVisibleO
                               </div>
                             </div>
                           )}
-                          {readOnly && assignedParty && (
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Assigned to: {assignedParty.name} ({assignedParty.role})
-                            </p>
+                          {readOnly && assignedParty && !assignedToMe && (
+                            <div className="flex items-center gap-2 flex-wrap mt-1.5 text-xs">
+                              <span className="text-muted-foreground">Responsible:</span>
+                              <PartyContactPopover party={assignedParty} dealId={dealId} taskLabel={task.label} />
+                              <span className="text-muted-foreground capitalize">({assignedParty.role.replace(/_/g, " ")})</span>
+                              {!task.completed && (
+                                <PartyContactPopover
+                                  party={assignedParty}
+                                  dealId={dealId}
+                                  taskLabel={task.label}
+                                  trigger={
+                                    <Button size="sm" variant="ghost" className="h-6 px-2 text-[11px]">
+                                      <BellRing className="h-3 w-3 mr-1" /> Request update
+                                    </Button>
+                                  }
+                                />
+                              )}
+                            </div>
+                          )}
+                          {readOnly && !assignedParty && (
+                            <p className="text-xs text-muted-foreground mt-1 italic">Handled by your agent</p>
                           )}
                         </div>
                       </div>
