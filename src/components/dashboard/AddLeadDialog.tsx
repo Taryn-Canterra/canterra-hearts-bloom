@@ -30,7 +30,7 @@ export const AddLeadDialog = ({ trigger, onCreated }: Props) => {
   const [form, setForm] = useState({
     name: "", email: "", phone: "", state: "CO", county: "",
     max_price: "", min_acres: "", min_stalls: "", bedrooms: "",
-    notes: "", needs_financing: false, claim_to_self: true,
+    notes: "", needs_financing: false,
   });
 
   const update = (k: keyof typeof form, v: string | boolean) => setForm((f) => ({ ...f, [k]: v }));
@@ -58,7 +58,7 @@ export const AddLeadDialog = ({ trigger, onCreated }: Props) => {
 
     if (error || !lead) { setSaving(false); toast.error(error?.message ?? "Failed"); return; }
 
-    if (form.claim_to_self && user) {
+    if (user) {
       await supabase.from("lead_assignments").insert({
         lead_type: "buyer_lead", lead_id: lead.id, assigned_to: user.id, status: "new",
       });
@@ -69,7 +69,7 @@ export const AddLeadDialog = ({ trigger, onCreated }: Props) => {
     setForm({
       name: "", email: "", phone: "", state: "CO", county: "",
       max_price: "", min_acres: "", min_stalls: "", bedrooms: "",
-      notes: "", needs_financing: false, claim_to_self: true,
+      notes: "", needs_financing: false,
     });
     toast.success("Lead added");
     onCreated?.();
@@ -139,11 +139,6 @@ export const AddLeadDialog = ({ trigger, onCreated }: Props) => {
           <div className="flex items-start gap-3 rounded-lg border bg-background p-3">
             <Checkbox id="ld-financing" checked={form.needs_financing} onCheckedChange={(c) => update("needs_financing", c === true)} className="mt-0.5" />
             <Label htmlFor="ld-financing" className="cursor-pointer text-sm font-normal">Needs financing referral</Label>
-          </div>
-
-          <div className="flex items-start gap-3 rounded-lg border bg-background p-3">
-            <Checkbox id="ld-claim" checked={form.claim_to_self} onCheckedChange={(c) => update("claim_to_self", c === true)} className="mt-0.5" />
-            <Label htmlFor="ld-claim" className="cursor-pointer text-sm font-normal">Assign this lead to me</Label>
           </div>
 
           <DialogFooter>
