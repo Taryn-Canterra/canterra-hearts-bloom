@@ -14,20 +14,27 @@ import { toast } from "sonner";
 
 export default function VendorDetail() {
   const { id } = useParams();
+  const { user } = useAuth();
   const [vendor, setVendor] = useState<any>(null);
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const refresh = async () => {
     if (!id) return;
-    (async () => {
-      const [{ data: v }, { data: r }] = await Promise.all([
-        supabase.from("vendors").select("*").eq("id", id).maybeSingle(),
-        supabase.from("vendor_reviews").select("*").eq("vendor_id", id).order("created_at", { ascending: false }),
-      ]);
-      setVendor(v); setReviews(r ?? []); setLoading(false);
-    })();
-  }, [id]);
+    const [{ data: v }, { data: r }] = await Promise.all([
+      supabase.from("vendors").select("*").eq("id", id).maybeSingle(),
+      supabase.from("vendor_reviews").select("*").eq("vendor_id", id).eq("status", "published").order("created_at", { ascending: false }),
+    ]);
+    setVendor(v); setReviews(r ?? []); setLoading(false);
+  };
+
+  useEffect(() => { refresh(); }, [id]);
+
+  const reportReview = async (reviewId: string) => {
+    if (!user) { toast.error("Sign in to report a review"); return; }
+    const { error } = await supabase.from("vendor_review_reports").insert({ review_id: reviewId, reporter_user_id: user.id, reason: "Inappropriate" });
+    if (error) toast.error(error.message); else toast.success("Thanks — we'll review it.");
+  };
 
   if (loading) return <div className="min-h-screen bg-background"><Header /><main className="container py-20 text-center text-muted-foreground">Loading…</main><Footer /></div>;
   if (!vendor) return <div className="min-h-screen bg-background"><Header /><main className="container py-20 text-center"><h1 className="font-display text-3xl text-primary">Vendor not found</h1></main><Footer /></div>;
