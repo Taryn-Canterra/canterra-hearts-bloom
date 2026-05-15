@@ -12,13 +12,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Star, MapPin, BadgeCheck, X, SlidersHorizontal } from "lucide-react";
 import { ALL_STATES, CO_COUNTIES } from "@/hooks/useSearchFilters";
+import { VENDOR_CATEGORIES } from "@/lib/vendorCategories";
+import { SaveVendorButton } from "@/components/vendors/SaveVendorButton";
+import { SuggestVendorDialog } from "@/components/vendors/SuggestVendorDialog";
 
-const CATEGORIES = [
-  "All", "Farrier", "Equine veterinarian", "Equine dentist", "Barn builder",
-  "Fence contractor", "Hay supplier", "Equine inspector", "Horse transporter",
-  "Trainer", "Feed store", "Ranch hand / caretaker", "Water well specialist",
-  "Irrigation contractor", "Real estate attorney", "Land surveyor",
-];
+const CATEGORIES = ["All", ...VENDOR_CATEGORIES];
 
 const SORTS = [
   { key: "recommended", label: "Recommended" },
