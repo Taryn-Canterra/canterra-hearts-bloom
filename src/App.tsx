@@ -28,6 +28,9 @@ import PortalCollectionDetail from "./pages/portal/PortalCollectionDetail.tsx";
 import PortalSearches from "./pages/portal/PortalSearches.tsx";
 import Vendors from "./pages/Vendors.tsx";
 import VendorDetail from "./pages/VendorDetail.tsx";
+import VendorLists from "./pages/dashboard/VendorLists.tsx";
+import VendorListEditor from "./pages/dashboard/VendorListEditor.tsx";
+import PortalSavedVendors from "./pages/portal/PortalSavedVendors.tsx";
 import SharedCollection from "./pages/SharedCollection.tsx";
 
 const queryClient = new QueryClient();
@@ -58,12 +61,15 @@ const App = () => (
             <Route path="/dashboard/claims" element={<ListingClaims />} />
             <Route path="/dashboard/templates" element={<Templates />} />
             <Route path="/dashboard/templates/:id" element={<TemplateEditor />} />
+            <Route path="/dashboard/vendor-lists" element={<VendorLists />} />
+            <Route path="/dashboard/vendor-lists/:id" element={<VendorListEditor />} />
             <Route path="/portal" element={<PortalHome />} />
             <Route path="/portal/calendar" element={<PortalCalendar />} />
             <Route path="/portal/deal/:id" element={<PortalDeal />} />
             <Route path="/portal/collections" element={<PortalCollections />} />
             <Route path="/portal/collections/:id" element={<PortalCollectionDetail />} />
             <Route path="/portal/searches" element={<PortalSearches />} />
+            <Route path="/portal/saved-vendors" element={<PortalSavedVendors />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
