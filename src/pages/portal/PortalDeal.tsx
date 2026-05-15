@@ -23,6 +23,7 @@ import { PostClosePanel } from "@/components/portal/PostClosePanel";
 import { ShowingRequestPanel } from "@/components/portal/ShowingRequestPanel";
 import { PropertyIntelligencePanel } from "@/components/portal/PropertyIntelligencePanel";
 import { HierarchicalChecklist } from "@/components/HierarchicalChecklist";
+import { ClientActionItems } from "@/components/portal/ClientActionItems";
 
 const STAGE_GROUPS = [
   { key: "new_lead", label: "New Lead" },
