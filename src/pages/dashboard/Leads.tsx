@@ -86,12 +86,9 @@ export default function Leads() {
           </div>
           <div className="flex flex-wrap gap-2">
             <AddLeadDialog
-              trigger={<Button variant="outline">+ Add lead</Button>}
+              trigger={<Button>+ Add lead</Button>}
               onCreated={load}
             />
-            <Link to="/dashboard/deals/new">
-              <Button>+ New deal (under contract)</Button>
-            </Link>
           </div>
         </div>
 
