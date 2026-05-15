@@ -19,6 +19,8 @@ import PortalCalendar from "./pages/portal/PortalCalendar.tsx";
 import AgentAITools from "./pages/dashboard/AgentAITools.tsx";
 import RoutingRules from "./pages/dashboard/RoutingRules.tsx";
 import ListingClaims from "./pages/dashboard/ListingClaims.tsx";
+import Templates from "./pages/dashboard/Templates.tsx";
+import TemplateEditor from "./pages/dashboard/TemplateEditor.tsx";
 import PortalHome from "./pages/portal/PortalHome.tsx";
 import PortalDeal from "./pages/portal/PortalDeal.tsx";
 import PortalCollections from "./pages/portal/PortalCollections.tsx";
@@ -54,6 +56,8 @@ const App = () => (
             <Route path="/dashboard/ai-tools" element={<AgentAITools />} />
             <Route path="/dashboard/routing" element={<RoutingRules />} />
             <Route path="/dashboard/claims" element={<ListingClaims />} />
+            <Route path="/dashboard/templates" element={<Templates />} />
+            <Route path="/dashboard/templates/:id" element={<TemplateEditor />} />
             <Route path="/portal" element={<PortalHome />} />
             <Route path="/portal/calendar" element={<PortalCalendar />} />
             <Route path="/portal/deal/:id" element={<PortalDeal />} />
