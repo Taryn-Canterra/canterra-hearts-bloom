@@ -44,8 +44,8 @@ export const AddLeadDialog = ({ trigger, onCreated }: Props) => {
 
     const { data: lead, error } = await supabase.from("buyer_leads").insert({
       name: parsed.data.name,
-      email: parsed.data.email,
-      phone: parsed.data.phone,
+      email: parsed.data.email || null,
+      phone: parsed.data.phone || null,
       state: parsed.data.state,
       county: parsed.data.county || null,
       max_price: toNum(form.max_price),
