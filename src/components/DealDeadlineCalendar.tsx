@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Check } from "lucide-react";
 import { DEADLINE_DEFS, formatCountdown, urgency } from "@/lib/dealDeadlines";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
+import { useCompletedDeadlineKeys } from "@/hooks/useCompletedDeadlineKeys";
 
 interface DeadlineEvent {
   field: string;
@@ -20,31 +20,7 @@ const sameDay = (a: Date, b: Date) =>
 
 export const DealDeadlineCalendar = ({ deal, title = "Key dates & deadlines" }: { deal: any; title?: string }) => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  const [completedKeys, setCompletedKeys] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
-    if (!deal?.id) return;
-    let active = true;
-    const load = async () => {
-      const { data } = await supabase
-        .from("deal_checklist_items")
-        .select("deadline_key, completed")
-        .eq("deal_id", deal.id)
-        .not("deadline_key", "is", null);
-      if (!active) return;
-      const set = new Set<string>();
-      (data ?? []).forEach((row: any) => {
-        if (row.completed && row.deadline_key) set.add(row.deadline_key);
-      });
-      setCompletedKeys(set);
-    };
-    load();
-    const channel = supabase
-      .channel(`deal-deadlines-${deal.id}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "deal_checklist_items", filter: `deal_id=eq.${deal.id}` }, load)
-      .subscribe();
-    return () => { active = false; supabase.removeChannel(channel); };
-  }, [deal?.id]);
+  const completedKeys = useCompletedDeadlineKeys(deal?.id);
 
   const events = useMemo<DeadlineEvent[]>(() => {
     if (!deal) return [];
