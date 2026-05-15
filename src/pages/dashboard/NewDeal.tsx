@@ -24,6 +24,7 @@ export default function NewDeal() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const inquiryId = params.get("inquiry");
+  const buyerLeadId = params.get("buyer_lead");
 
   const [side, setSide] = useState<"buyer" | "seller">("buyer");
   const [clientName, setClientName] = useState("");
@@ -106,6 +107,21 @@ export default function NewDeal() {
     })();
   }, [inquiryId]);
 
+  // Pre-fill from a manual buyer_lead if converting
+  useEffect(() => {
+    if (!buyerLeadId) return;
+    (async () => {
+      const { data: ld } = await supabase.from("buyer_leads").select("*").eq("id", buyerLeadId).maybeSingle();
+      if (ld) {
+        setClientName(ld.name);
+        setClientEmail(ld.email);
+        setClientPhone(ld.phone ?? "");
+        setNotes(ld.notes ?? "");
+        if (ld.max_price) setPrice(String(ld.max_price));
+      }
+    })();
+  }, [buyerLeadId]);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -137,8 +153,8 @@ export default function NewDeal() {
       price: price ? Number(price) : null,
       expected_close_date: expectedClose || null,
       notes: notes || null,
-      source_lead_type: inquiryId ? "property_inquiry" : "manual",
-      source_lead_id: inquiryId,
+      source_lead_type: inquiryId ? "property_inquiry" : buyerLeadId ? "buyer_lead" : "manual",
+      source_lead_id: inquiryId ?? buyerLeadId,
     }).select().single();
 
     if (error) {
@@ -153,6 +169,13 @@ export default function NewDeal() {
         .update({ status: "converted" })
         .eq("lead_type", "property_inquiry")
         .eq("lead_id", inquiryId);
+    }
+    if (buyerLeadId) {
+      await supabase.from("lead_assignments")
+        .update({ status: "converted" })
+        .eq("lead_type", "buyer_lead")
+        .eq("lead_id", buyerLeadId);
+      await supabase.from("buyer_leads").update({ status: "converted" }).eq("id", buyerLeadId);
     }
 
     toast.success("Deal created with checklist seeded");
