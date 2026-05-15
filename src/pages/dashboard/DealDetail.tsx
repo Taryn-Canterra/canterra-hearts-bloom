@@ -74,24 +74,6 @@ export default function DealDetail() {
 
   useEffect(() => { load(); }, [id]);
 
-  const toggleItem = async (item: any) => {
-    const completed = !item.completed;
-    const { error } = await supabase
-      .from("deal_checklist_items")
-      .update({
-        completed,
-        completed_at: completed ? new Date().toISOString() : null,
-        completed_by: completed ? user!.id : null,
-      })
-      .eq("id", item.id);
-    if (error) toast.error(error.message);
-    else load();
-  };
-
-  const toggleVisibility = async (item: any) => {
-    await supabase.from("deal_checklist_items").update({ client_visible: !item.client_visible }).eq("id", item.id);
-    load();
-  };
 
   const updateStage = async (stage: string) => {
     await supabase.from("deals").update({ stage: stage as any }).eq("id", id);
