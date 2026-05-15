@@ -24,6 +24,7 @@ export default function NewDeal() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const inquiryId = params.get("inquiry");
+  const buyerLeadId = params.get("buyer_lead");
 
   const [side, setSide] = useState<"buyer" | "seller">("buyer");
   const [clientName, setClientName] = useState("");
