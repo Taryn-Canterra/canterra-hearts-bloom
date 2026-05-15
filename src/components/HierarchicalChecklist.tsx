@@ -148,7 +148,7 @@ export const HierarchicalChecklist = ({ dealId, readOnly = false, clientVisibleO
                   return (
                     <Collapsible
                       key={task.id}
-                      defaultOpen={!task.completed && (steps.length > 0 || taskResources.length > 0)}
+                      defaultOpen={false}
                       className="border rounded-md"
                     >
                       <div className="flex items-start gap-3 p-3">
