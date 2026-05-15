@@ -14,8 +14,8 @@ import { useAuth } from "@/hooks/useAuth";
 
 const schema = z.object({
   name: z.string().trim().min(1).max(120),
-  email: z.string().trim().email().max(254),
-  phone: z.string().trim().min(5).max(40),
+  email: z.string().trim().max(254).optional().or(z.literal("")),
+  phone: z.string().trim().max(40).optional().or(z.literal("")),
   state: z.string().trim().min(2).max(50),
   county: z.string().trim().max(120).optional().or(z.literal("")),
   notes: z.string().max(2000).optional().or(z.literal("")),
