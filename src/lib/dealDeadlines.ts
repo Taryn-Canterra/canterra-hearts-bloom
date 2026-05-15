@@ -20,6 +20,7 @@ export const DEADLINE_DEFS: DeadlineDef[] = [
   { field: "financing_contingency_deadline", label: "Financing contingency deadline", shortLabel: "Financing", applies: "both", stage: "financing_and_title" },
   { field: "final_walkthrough_date", label: "Final walkthrough", shortLabel: "Walkthrough", applies: "both", stage: "closing" },
   { field: "expected_close_date", label: "Closing day", shortLabel: "Closing", applies: "both", stage: "closing" },
+  { field: "possession_date", label: "Possession transfer", shortLabel: "Possession", applies: "both", stage: "closing" },
 ];
 
 export const FULL_STAGES = [

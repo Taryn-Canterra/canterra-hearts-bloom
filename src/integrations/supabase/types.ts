@@ -149,6 +149,7 @@ export type Database = {
         Row: {
           client_visible_default: boolean
           created_at: string
+          deadline_key: string | null
           default_assignee_role: string | null
           id: string
           notes: string | null
@@ -163,6 +164,7 @@ export type Database = {
         Insert: {
           client_visible_default?: boolean
           created_at?: string
+          deadline_key?: string | null
           default_assignee_role?: string | null
           id?: string
           notes?: string | null
@@ -177,6 +179,7 @@ export type Database = {
         Update: {
           client_visible_default?: boolean
           created_at?: string
+          deadline_key?: string | null
           default_assignee_role?: string | null
           id?: string
           notes?: string | null
@@ -342,6 +345,7 @@ export type Database = {
           completed_at: string | null
           completed_by: string | null
           created_at: string
+          deadline_key: string | null
           deal_id: string
           description: string | null
           id: string
@@ -365,6 +369,7 @@ export type Database = {
           completed_at?: string | null
           completed_by?: string | null
           created_at?: string
+          deadline_key?: string | null
           deal_id: string
           description?: string | null
           id?: string
@@ -388,6 +393,7 @@ export type Database = {
           completed_at?: string | null
           completed_by?: string | null
           created_at?: string
+          deadline_key?: string | null
           deal_id?: string
           description?: string | null
           id?: string

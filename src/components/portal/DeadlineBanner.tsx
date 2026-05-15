@@ -2,9 +2,12 @@ import { AlertTriangle, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { formatCountdown, getActiveDeadlines, urgency } from "@/lib/dealDeadlines";
+import { useCompletedDeadlineKeys } from "@/hooks/useCompletedDeadlineKeys";
 
 export const DeadlineBanner = ({ deal }: { deal: any }) => {
+  const completedKeys = useCompletedDeadlineKeys(deal?.id);
   const upcoming = getActiveDeadlines(deal)
+    .filter((d) => !completedKeys.has(d.field))
     .map((d) => ({ ...d, urgency: urgency(d.value) }))
     .filter((d) => d.urgency === "amber" || d.urgency === "red" || d.urgency === "past")
     .sort((a, b) => new Date(a.value!).getTime() - new Date(b.value!).getTime())
