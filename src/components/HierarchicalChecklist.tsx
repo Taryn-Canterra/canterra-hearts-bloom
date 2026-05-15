@@ -125,7 +125,7 @@ export const HierarchicalChecklist = ({ dealId, readOnly = false, clientVisibleO
         const done = g.tasks.filter((t) => t.completed).length;
         const allDone = total > 0 && done === total;
         return (
-          <Collapsible key={g.stage.key} defaultOpen={!allDone}>
+          <Collapsible key={g.stage.key} defaultOpen={false}>
             <CollapsibleTrigger className="group w-full flex items-center justify-between gap-2 py-2 px-2 rounded hover:bg-muted/40 text-left">
               <div className="flex items-center gap-2">
                 <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=closed]:-rotate-90" />
@@ -148,7 +148,7 @@ export const HierarchicalChecklist = ({ dealId, readOnly = false, clientVisibleO
                   return (
                     <Collapsible
                       key={task.id}
-                      defaultOpen={!task.completed && (steps.length > 0 || taskResources.length > 0)}
+                      defaultOpen={false}
                       className="border rounded-md"
                     >
                       <div className="flex items-start gap-3 p-3">
