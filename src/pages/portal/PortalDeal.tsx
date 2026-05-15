@@ -146,6 +146,9 @@ export default function PortalDeal() {
         {/* Urgent action banner */}
         <DeadlineBanner deal={deal} />
 
+        {/* Personal action items (only renders if any tasks are assigned to this client) */}
+        <ClientActionItems dealId={id!} />
+
         {/* Header */}
         <Card>
           <CardHeader>
