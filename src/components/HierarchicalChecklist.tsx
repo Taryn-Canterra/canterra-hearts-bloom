@@ -8,9 +8,10 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { ChevronDown, ChevronRight, ExternalLink, Video, FileText, Link as LinkIcon, Check, Circle } from "lucide-react";
+import { ChevronDown, ChevronRight, ExternalLink, Video, FileText, Link as LinkIcon, Check, Circle, BellRing } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { PartyContactPopover } from "@/components/portal/PartyContactPopover";
 
 const STAGES = [
   { key: "new_lead", label: "New Lead" },
