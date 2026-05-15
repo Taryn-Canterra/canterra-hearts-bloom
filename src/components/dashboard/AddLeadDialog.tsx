@@ -92,12 +92,12 @@ export const AddLeadDialog = ({ trigger, onCreated }: Props) => {
               <Input id="ld-name" required value={form.name} onChange={(e) => update("name", e.target.value)} />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="ld-email">Email *</Label>
-              <Input id="ld-email" type="email" required value={form.email} onChange={(e) => update("email", e.target.value)} />
+              <Label htmlFor="ld-email">Email</Label>
+              <Input id="ld-email" type="email" value={form.email} onChange={(e) => update("email", e.target.value)} />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="ld-phone">Phone *</Label>
-              <Input id="ld-phone" required value={form.phone} onChange={(e) => update("phone", e.target.value)} />
+              <Label htmlFor="ld-phone">Phone</Label>
+              <Input id="ld-phone" value={form.phone} onChange={(e) => update("phone", e.target.value)} />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="ld-state">State *</Label>
