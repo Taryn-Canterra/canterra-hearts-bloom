@@ -14,8 +14,8 @@ import { useAuth } from "@/hooks/useAuth";
 
 const schema = z.object({
   name: z.string().trim().min(1).max(120),
-  email: z.string().trim().email().max(254),
-  phone: z.string().trim().min(5).max(40),
+  email: z.string().trim().max(254).optional().or(z.literal("")),
+  phone: z.string().trim().max(40).optional().or(z.literal("")),
   state: z.string().trim().min(2).max(50),
   county: z.string().trim().max(120).optional().or(z.literal("")),
   notes: z.string().max(2000).optional().or(z.literal("")),
@@ -44,8 +44,8 @@ export const AddLeadDialog = ({ trigger, onCreated }: Props) => {
 
     const { data: lead, error } = await supabase.from("buyer_leads").insert({
       name: parsed.data.name,
-      email: parsed.data.email,
-      phone: parsed.data.phone,
+      email: parsed.data.email || null,
+      phone: parsed.data.phone || null,
       state: parsed.data.state,
       county: parsed.data.county || null,
       max_price: toNum(form.max_price),
@@ -92,12 +92,12 @@ export const AddLeadDialog = ({ trigger, onCreated }: Props) => {
               <Input id="ld-name" required value={form.name} onChange={(e) => update("name", e.target.value)} />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="ld-email">Email *</Label>
-              <Input id="ld-email" type="email" required value={form.email} onChange={(e) => update("email", e.target.value)} />
+              <Label htmlFor="ld-email">Email</Label>
+              <Input id="ld-email" type="email" value={form.email} onChange={(e) => update("email", e.target.value)} />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="ld-phone">Phone *</Label>
-              <Input id="ld-phone" required value={form.phone} onChange={(e) => update("phone", e.target.value)} />
+              <Label htmlFor="ld-phone">Phone</Label>
+              <Input id="ld-phone" value={form.phone} onChange={(e) => update("phone", e.target.value)} />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="ld-state">State *</Label>
