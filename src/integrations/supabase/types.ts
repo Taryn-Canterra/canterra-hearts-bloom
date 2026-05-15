@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      agent_vendor_list_items: {
+        Row: {
+          agent_note: string | null
+          created_at: string
+          id: string
+          list_id: string
+          sort_order: number
+          vendor_id: string
+        }
+        Insert: {
+          agent_note?: string | null
+          created_at?: string
+          id?: string
+          list_id: string
+          sort_order?: number
+          vendor_id: string
+        }
+        Update: {
+          agent_note?: string | null
+          created_at?: string
+          id?: string
+          list_id?: string
+          sort_order?: number
+          vendor_id?: string
+        }
+        Relationships: []
+      }
+      agent_vendor_lists: {
+        Row: {
+          cover_emoji: string | null
+          created_at: string
+          deal_id: string | null
+          description: string | null
+          id: string
+          is_template: boolean
+          name: string
+          owner_user_id: string
+          source_list_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          cover_emoji?: string | null
+          created_at?: string
+          deal_id?: string | null
+          description?: string | null
+          id?: string
+          is_template?: boolean
+          name: string
+          owner_user_id: string
+          source_list_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cover_emoji?: string | null
+          created_at?: string
+          deal_id?: string | null
+          description?: string | null
+          id?: string
+          is_template?: boolean
+          name?: string
+          owner_user_id?: string
+          source_list_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       buyer_leads: {
         Row: {
           bedrooms: number | null
@@ -1687,33 +1753,99 @@ export type Database = {
         }
         Relationships: []
       }
+      user_saved_vendors: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          user_id: string
+          vendor_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          user_id: string
+          vendor_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          user_id?: string
+          vendor_id?: string
+        }
+        Relationships: []
+      }
+      vendor_review_reports: {
+        Row: {
+          created_at: string
+          id: string
+          reason: string | null
+          reporter_user_id: string
+          review_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reason?: string | null
+          reporter_user_id: string
+          review_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reason?: string | null
+          reporter_user_id?: string
+          review_id?: string
+        }
+        Relationships: []
+      }
       vendor_reviews: {
         Row: {
           body: string | null
           created_at: string
+          hidden_at: string | null
+          hidden_by: string | null
           id: string
           rating: number
+          report_count: number
           reviewer_id: string
+          reviewer_user_id: string | null
+          status: string
           used_during_canterra_tx: boolean
           vendor_id: string
+          verified_buyer: boolean
         }
         Insert: {
           body?: string | null
           created_at?: string
+          hidden_at?: string | null
+          hidden_by?: string | null
           id?: string
           rating: number
+          report_count?: number
           reviewer_id: string
+          reviewer_user_id?: string | null
+          status?: string
           used_during_canterra_tx?: boolean
           vendor_id: string
+          verified_buyer?: boolean
         }
         Update: {
           body?: string | null
           created_at?: string
+          hidden_at?: string | null
+          hidden_by?: string | null
           id?: string
           rating?: number
+          report_count?: number
           reviewer_id?: string
+          reviewer_user_id?: string | null
+          status?: string
           used_during_canterra_tx?: boolean
           vendor_id?: string
+          verified_buyer?: boolean
         }
         Relationships: [
           {
@@ -1724,6 +1856,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      vendor_suggestions: {
+        Row: {
+          category: string | null
+          city: string | null
+          created_at: string
+          id: string
+          invite_email_sent_at: string | null
+          personal_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          state: string | null
+          status: string
+          submitted_by: string
+          vendor_email: string | null
+          vendor_name: string
+          vendor_phone: string | null
+          vendor_website: string | null
+        }
+        Insert: {
+          category?: string | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          invite_email_sent_at?: string | null
+          personal_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          state?: string | null
+          status?: string
+          submitted_by: string
+          vendor_email?: string | null
+          vendor_name: string
+          vendor_phone?: string | null
+          vendor_website?: string | null
+        }
+        Update: {
+          category?: string | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          invite_email_sent_at?: string | null
+          personal_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          state?: string | null
+          status?: string
+          submitted_by?: string
+          vendor_email?: string | null
+          vendor_name?: string
+          vendor_phone?: string | null
+          vendor_website?: string | null
+        }
+        Relationships: []
       }
       vendors: {
         Row: {
@@ -1802,6 +1988,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      clone_vendor_list_to_deal: {
+        Args: { _custom_name?: string; _deal_id: string; _template_id: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

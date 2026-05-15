@@ -12,13 +12,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Star, MapPin, BadgeCheck, X, SlidersHorizontal } from "lucide-react";
 import { ALL_STATES, CO_COUNTIES } from "@/hooks/useSearchFilters";
+import { VENDOR_CATEGORIES } from "@/lib/vendorCategories";
+import { SaveVendorButton } from "@/components/vendors/SaveVendorButton";
+import { SuggestVendorDialog } from "@/components/vendors/SuggestVendorDialog";
 
-const CATEGORIES = [
-  "All", "Farrier", "Equine veterinarian", "Equine dentist", "Barn builder",
-  "Fence contractor", "Hay supplier", "Equine inspector", "Horse transporter",
-  "Trainer", "Feed store", "Ranch hand / caretaker", "Water well specialist",
-  "Irrigation contractor", "Real estate attorney", "Land surveyor",
-];
+const CATEGORIES = ["All", ...VENDOR_CATEGORIES];
 
 const SORTS = [
   { key: "recommended", label: "Recommended" },
@@ -114,11 +112,14 @@ export default function Vendors() {
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container py-10">
-        <div className="mb-8">
-          <h1 className="font-display text-4xl font-semibold text-primary">Equine vendor directory</h1>
-          <p className="text-muted-foreground mt-2">
-            Trusted farriers, vets, barn builders, and more — vetted for the equine real estate community.
-          </p>
+        <div className="mb-8 flex items-start justify-between gap-3 flex-wrap">
+          <div>
+            <h1 className="font-display text-4xl font-semibold text-primary">Equine industry directory</h1>
+            <p className="text-muted-foreground mt-2 max-w-2xl">
+              Trusted vets, farriers, trainers, body workers, shippers, builders, and more — your full-service equine community for any new or existing horse property.
+            </p>
+          </div>
+          <SuggestVendorDialog />
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
@@ -235,10 +236,13 @@ export default function Vendors() {
 
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {vendors.map((v) => (
-                <Link key={v.id} to={`/vendors/${v.id}`}>
-                  <Card className="h-full hover:shadow-md transition-shadow">
+                <Card key={v.id} className="h-full hover:shadow-md transition-shadow relative">
+                  <div className="absolute top-2 right-2 z-10">
+                    <SaveVendorButton vendorId={v.id} variant="ghost" size="icon" />
+                  </div>
+                  <Link to={`/vendors/${v.id}`} className="block">
                     <CardContent className="p-5 space-y-3">
-                      <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start justify-between gap-2 pr-8">
                         <div className="min-w-0">
                           <h3 className="font-display text-lg font-medium text-primary truncate">{v.name}</h3>
                           <p className="text-xs text-muted-foreground">{v.category}</p>
@@ -262,8 +266,8 @@ export default function Vendors() {
                         <p>Serves: {(v.service_counties ?? []).slice(0, 3).join(", ")}{v.service_counties?.length > 3 ? "…" : ""}</p>
                       </div>
                     </CardContent>
-                  </Card>
-                </Link>
+                  </Link>
+                </Card>
               ))}
             </div>
 

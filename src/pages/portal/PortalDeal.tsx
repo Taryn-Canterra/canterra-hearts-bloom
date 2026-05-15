@@ -20,6 +20,7 @@ import { SellerListingActivity } from "@/components/portal/SellerListingActivity
 import { PriceReductionPanel } from "@/components/portal/PriceReductionPanel";
 import { EsignPanel } from "@/components/portal/EsignPanel";
 import { PostClosePanel } from "@/components/portal/PostClosePanel";
+import { SharedVendorLists } from "@/components/portal/SharedVendorLists";
 import { ShowingRequestPanel } from "@/components/portal/ShowingRequestPanel";
 import { PropertyIntelligencePanel } from "@/components/portal/PropertyIntelligencePanel";
 import { HierarchicalChecklist } from "@/components/HierarchicalChecklist";
@@ -271,6 +272,9 @@ export default function PortalDeal() {
 
         {/* Post-close hub */}
         {isPostClose && <PostClosePanel deal={deal} />}
+
+        {/* Curated vendor lists shared by your agent */}
+        <SharedVendorLists dealId={deal.id} />
 
         {/* Messages */}
         <Card>

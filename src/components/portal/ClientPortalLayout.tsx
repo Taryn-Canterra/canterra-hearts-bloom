@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Navigate, useLocation, Link } from "react-router-dom";
-import { LogOut, Home, FolderHeart, Search, Store, CalendarDays } from "lucide-react";
+import { LogOut, Home, FolderHeart, Search, Store, CalendarDays, Heart } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 
@@ -39,6 +39,9 @@ export const ClientPortalLayout = ({ children }: { children: ReactNode }) => {
             </Link>
             <Link to="/vendors" className="hidden md:inline-flex items-center gap-1.5 text-muted-foreground hover:text-primary px-2">
               <Store className="h-4 w-4" /> Vendors
+            </Link>
+            <Link to="/portal/saved-vendors" className="hidden md:inline-flex items-center gap-1.5 text-muted-foreground hover:text-primary px-2">
+              <Heart className="h-4 w-4" /> Saved
             </Link>
             <span className="hidden lg:inline text-muted-foreground">{user?.email}</span>
             <Link to="/" className="text-muted-foreground hover:text-primary"><Home className="h-4 w-4" /></Link>

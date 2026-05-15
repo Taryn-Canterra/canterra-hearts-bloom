@@ -6,24 +6,35 @@ import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, Phone, Mail, Globe, MapPin, BadgeCheck, ArrowLeft } from "lucide-react";
+import { Star, Phone, Mail, Globe, MapPin, BadgeCheck, ArrowLeft, Flag } from "lucide-react";
+import { ReviewForm } from "@/components/vendors/ReviewForm";
+import { SaveVendorButton } from "@/components/vendors/SaveVendorButton";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 export default function VendorDetail() {
   const { id } = useParams();
+  const { user } = useAuth();
   const [vendor, setVendor] = useState<any>(null);
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const refresh = async () => {
     if (!id) return;
-    (async () => {
-      const [{ data: v }, { data: r }] = await Promise.all([
-        supabase.from("vendors").select("*").eq("id", id).maybeSingle(),
-        supabase.from("vendor_reviews").select("*").eq("vendor_id", id).order("created_at", { ascending: false }),
-      ]);
-      setVendor(v); setReviews(r ?? []); setLoading(false);
-    })();
-  }, [id]);
+    const [{ data: v }, { data: r }] = await Promise.all([
+      supabase.from("vendors").select("*").eq("id", id).maybeSingle(),
+      supabase.from("vendor_reviews").select("*").eq("vendor_id", id).eq("status", "published").order("created_at", { ascending: false }),
+    ]);
+    setVendor(v); setReviews(r ?? []); setLoading(false);
+  };
+
+  useEffect(() => { refresh(); }, [id]);
+
+  const reportReview = async (reviewId: string) => {
+    if (!user) { toast.error("Sign in to report a review"); return; }
+    const { error } = await supabase.from("vendor_review_reports").insert({ review_id: reviewId, reporter_user_id: user.id, reason: "Inappropriate" });
+    if (error) toast.error(error.message); else toast.success("Thanks — we'll review it.");
+  };
 
   if (loading) return <div className="min-h-screen bg-background"><Header /><main className="container py-20 text-center text-muted-foreground">Loading…</main><Footer /></div>;
   if (!vendor) return <div className="min-h-screen bg-background"><Header /><main className="container py-20 text-center"><h1 className="font-display text-3xl text-primary">Vendor not found</h1></main><Footer /></div>;
@@ -57,6 +68,7 @@ export default function VendorDetail() {
                 )}
               </div>
               <div className="flex flex-col gap-2 min-w-48">
+                <SaveVendorButton vendorId={vendor.id} />
                 {vendor.phone && (
                   <Button asChild variant="outline" size="sm"><a href={`tel:${vendor.phone}`}><Phone className="mr-2 h-4 w-4" /> {vendor.phone}</a></Button>
                 )}
@@ -86,21 +98,29 @@ export default function VendorDetail() {
           </CardContent>
         </Card>
 
-        <div className="mt-8">
-          <h2 className="font-display text-2xl font-medium text-primary mb-3">Reviews</h2>
-          {reviews.length === 0 && <p className="text-sm text-muted-foreground">No reviews yet.</p>}
+        <div className="mt-8 space-y-4">
+          <h2 className="font-display text-2xl font-medium text-primary">Reviews</h2>
+          <ReviewForm vendorId={vendor.id} onSubmitted={refresh} />
+          {reviews.length === 0 && <p className="text-sm text-muted-foreground">No reviews yet — be the first to share your experience.</p>}
           <div className="space-y-3">
             {reviews.map((r) => (
               <Card key={r.id}>
                 <CardContent className="p-4">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="flex">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} className={`h-4 w-4 ${i < r.rating ? "fill-accent text-accent" : "text-muted"}`} />
-                      ))}
+                  <div className="flex items-center justify-between gap-2 mb-1 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <div className="flex">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star key={i} className={`h-4 w-4 ${i < r.rating ? "fill-accent text-accent" : "text-muted"}`} />
+                        ))}
+                      </div>
+                      {(r.verified_buyer || r.used_during_canterra_tx) && (
+                        <Badge variant="secondary" className="text-xs gap-1"><BadgeCheck className="h-3 w-3" /> Verified Canterra buyer</Badge>
+                      )}
                     </div>
-                    {r.used_during_canterra_tx && (
-                      <Badge variant="secondary" className="text-xs">Used during Canterra transaction</Badge>
+                    {user && r.reviewer_user_id !== user.id && (
+                      <Button size="sm" variant="ghost" className="h-7 text-[11px] text-muted-foreground" onClick={() => reportReview(r.id)}>
+                        <Flag className="h-3 w-3 mr-1" /> Report
+                      </Button>
                     )}
                   </div>
                   {r.body && <p className="text-sm text-foreground/85">{r.body}</p>}
