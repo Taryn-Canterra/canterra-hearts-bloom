@@ -6,7 +6,11 @@ import { Footer } from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, Phone, Mail, Globe, MapPin, BadgeCheck, ArrowLeft } from "lucide-react";
+import { Star, Phone, Mail, Globe, MapPin, BadgeCheck, ArrowLeft, Flag } from "lucide-react";
+import { ReviewForm } from "@/components/vendors/ReviewForm";
+import { SaveVendorButton } from "@/components/vendors/SaveVendorButton";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 export default function VendorDetail() {
   const { id } = useParams();
