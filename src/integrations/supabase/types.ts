@@ -85,7 +85,7 @@ export type Database = {
           bedrooms: number | null
           county: string | null
           created_at: string
-          email: string
+          email: string | null
           id: string
           max_price: number | null
           min_acres: number | null
@@ -93,7 +93,7 @@ export type Database = {
           name: string
           needs_financing: boolean
           notes: string | null
-          phone: string
+          phone: string | null
           state: string
           status: string
           updated_at: string
@@ -102,7 +102,7 @@ export type Database = {
           bedrooms?: number | null
           county?: string | null
           created_at?: string
-          email: string
+          email?: string | null
           id?: string
           max_price?: number | null
           min_acres?: number | null
@@ -110,7 +110,7 @@ export type Database = {
           name: string
           needs_financing?: boolean
           notes?: string | null
-          phone: string
+          phone?: string | null
           state: string
           status?: string
           updated_at?: string
@@ -119,7 +119,7 @@ export type Database = {
           bedrooms?: number | null
           county?: string | null
           created_at?: string
-          email?: string
+          email?: string | null
           id?: string
           max_price?: number | null
           min_acres?: number | null
@@ -127,7 +127,7 @@ export type Database = {
           name?: string
           needs_financing?: boolean
           notes?: string | null
-          phone?: string
+          phone?: string | null
           state?: string
           status?: string
           updated_at?: string
