@@ -30,7 +30,7 @@ export const AddLeadDialog = ({ trigger, onCreated }: Props) => {
   const [form, setForm] = useState({
     name: "", email: "", phone: "", state: "CO", county: "",
     max_price: "", min_acres: "", min_stalls: "", bedrooms: "",
-    notes: "", needs_financing: false, claim_to_self: true,
+    notes: "", needs_financing: false,
   });
 
   const update = (k: keyof typeof form, v: string | boolean) => setForm((f) => ({ ...f, [k]: v }));
