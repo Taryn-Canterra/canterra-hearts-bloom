@@ -48,9 +48,7 @@ export const HierarchicalChecklist = ({ dealId, readOnly = false, clientVisibleO
   const load = async () => {
     const [{ data: ci }, { data: pa }] = await Promise.all([
       supabase.from("deal_checklist_items").select("*").eq("deal_id", dealId).order("sort_order"),
-      readOnly
-        ? Promise.resolve({ data: [] as any[] })
-        : supabase.from("deal_parties").select("*").eq("deal_id", dealId),
+      supabase.from("deal_parties").select("*").eq("deal_id", dealId),
     ]);
     setItems(ci ?? []);
     setParties(pa ?? []);
@@ -68,7 +66,10 @@ export const HierarchicalChecklist = ({ dealId, readOnly = false, clientVisibleO
   useEffect(() => { load(); }, [dealId]);
 
   const toggleItem = async (item: any) => {
-    if (readOnly) return;
+    // Allow client check-off when assigned to current user
+    const assignedParty = parties.find((p) => p.id === item.assigned_party_id);
+    const clientCanCheck = readOnly && assignedParty?.user_id === currentUserId;
+    if (readOnly && !clientCanCheck) return;
     const completed = !item.completed;
     const { error } = await supabase
       .from("deal_checklist_items")
