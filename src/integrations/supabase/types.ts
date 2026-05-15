@@ -68,6 +68,175 @@ export type Database = {
         }
         Relationships: []
       }
+      checklist_template_resources: {
+        Row: {
+          id: string
+          kind: string
+          label: string
+          sort_order: number
+          step_id: string | null
+          task_id: string | null
+          url: string | null
+        }
+        Insert: {
+          id?: string
+          kind: string
+          label: string
+          sort_order?: number
+          step_id?: string | null
+          task_id?: string | null
+          url?: string | null
+        }
+        Update: {
+          id?: string
+          kind?: string
+          label?: string
+          sort_order?: number
+          step_id?: string | null
+          task_id?: string | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checklist_template_resources_step_id_fkey"
+            columns: ["step_id"]
+            isOneToOne: false
+            referencedRelation: "checklist_template_steps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checklist_template_resources_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "checklist_template_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checklist_template_steps: {
+        Row: {
+          body: string
+          default_assignee_role: string | null
+          id: string
+          sort_order: number
+          task_id: string
+        }
+        Insert: {
+          body: string
+          default_assignee_role?: string | null
+          id?: string
+          sort_order?: number
+          task_id: string
+        }
+        Update: {
+          body?: string
+          default_assignee_role?: string | null
+          id?: string
+          sort_order?: number
+          task_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checklist_template_steps_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "checklist_template_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checklist_template_tasks: {
+        Row: {
+          client_visible_default: boolean
+          created_at: string
+          default_assignee_role: string | null
+          id: string
+          notes: string | null
+          owner_role: string | null
+          phase_key: string
+          phase_label: string
+          sort_order: number
+          task_number: number | null
+          template_id: string
+          title: string
+        }
+        Insert: {
+          client_visible_default?: boolean
+          created_at?: string
+          default_assignee_role?: string | null
+          id?: string
+          notes?: string | null
+          owner_role?: string | null
+          phase_key: string
+          phase_label: string
+          sort_order?: number
+          task_number?: number | null
+          template_id: string
+          title: string
+        }
+        Update: {
+          client_visible_default?: boolean
+          created_at?: string
+          default_assignee_role?: string | null
+          id?: string
+          notes?: string | null
+          owner_role?: string | null
+          phase_key?: string
+          phase_label?: string
+          sort_order?: number
+          task_number?: number | null
+          template_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checklist_template_tasks_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "checklist_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checklist_templates: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_default: boolean
+          is_system_master: boolean
+          name: string
+          owner_user_id: string | null
+          side: string
+          state: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_default?: boolean
+          is_system_master?: boolean
+          name: string
+          owner_user_id?: string | null
+          side: string
+          state?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_default?: boolean
+          is_system_master?: boolean
+          name?: string
+          owner_user_id?: string | null
+          side?: string
+          state?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       collection_items: {
         Row: {
           added_at: string
@@ -165,6 +334,9 @@ export type Database = {
       }
       deal_checklist_items: {
         Row: {
+          assigned_party_id: string | null
+          assigned_user_id: string | null
+          body: string | null
           client_visible: boolean
           completed: boolean
           completed_at: string | null
@@ -173,12 +345,21 @@ export type Database = {
           deal_id: string
           description: string | null
           id: string
+          kind: string
           label: string
+          notes: string | null
+          owner_role: string | null
+          parent_task_id: string | null
           sort_order: number
+          source_template_task_id: string | null
           stage: Database["public"]["Enums"]["deal_stage"]
+          task_number: number | null
           updated_at: string
         }
         Insert: {
+          assigned_party_id?: string | null
+          assigned_user_id?: string | null
+          body?: string | null
           client_visible?: boolean
           completed?: boolean
           completed_at?: string | null
@@ -187,12 +368,21 @@ export type Database = {
           deal_id: string
           description?: string | null
           id?: string
+          kind?: string
           label: string
+          notes?: string | null
+          owner_role?: string | null
+          parent_task_id?: string | null
           sort_order?: number
+          source_template_task_id?: string | null
           stage: Database["public"]["Enums"]["deal_stage"]
+          task_number?: number | null
           updated_at?: string
         }
         Update: {
+          assigned_party_id?: string | null
+          assigned_user_id?: string | null
+          body?: string | null
           client_visible?: boolean
           completed?: boolean
           completed_at?: string | null
@@ -201,17 +391,75 @@ export type Database = {
           deal_id?: string
           description?: string | null
           id?: string
+          kind?: string
           label?: string
+          notes?: string | null
+          owner_role?: string | null
+          parent_task_id?: string | null
           sort_order?: number
+          source_template_task_id?: string | null
           stage?: Database["public"]["Enums"]["deal_stage"]
+          task_number?: number | null
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "deal_checklist_items_assigned_party_id_fkey"
+            columns: ["assigned_party_id"]
+            isOneToOne: false
+            referencedRelation: "deal_parties"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "deal_checklist_items_deal_id_fkey"
             columns: ["deal_id"]
             isOneToOne: false
             referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deal_checklist_items_parent_task_id_fkey"
+            columns: ["parent_task_id"]
+            isOneToOne: false
+            referencedRelation: "deal_checklist_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deal_checklist_resources: {
+        Row: {
+          checklist_item_id: string
+          created_at: string
+          id: string
+          kind: string
+          label: string
+          sort_order: number
+          url: string | null
+        }
+        Insert: {
+          checklist_item_id: string
+          created_at?: string
+          id?: string
+          kind: string
+          label: string
+          sort_order?: number
+          url?: string | null
+        }
+        Update: {
+          checklist_item_id?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          label?: string
+          sort_order?: number
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_checklist_resources_checklist_item_id_fkey"
+            columns: ["checklist_item_id"]
+            isOneToOne: false
+            referencedRelation: "deal_checklist_items"
             referencedColumns: ["id"]
           },
         ]
@@ -596,6 +844,48 @@ export type Database = {
           proposed_close_date?: string | null
           status?: string
           submitted_at?: string
+        }
+        Relationships: []
+      }
+      deal_parties: {
+        Row: {
+          added_by: string
+          company: string | null
+          created_at: string
+          deal_id: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          role: string
+          user_id: string | null
+        }
+        Insert: {
+          added_by: string
+          company?: string | null
+          created_at?: string
+          deal_id: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          role: string
+          user_id?: string | null
+        }
+        Update: {
+          added_by?: string
+          company?: string | null
+          created_at?: string
+          deal_id?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          role?: string
+          user_id?: string | null
         }
         Relationships: []
       }
