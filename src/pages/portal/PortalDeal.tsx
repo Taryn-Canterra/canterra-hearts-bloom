@@ -150,11 +150,10 @@ export default function PortalDeal() {
         <ClientActionItems dealId={id!} />
 
         {/* Header */}
-        <Card>
-          <CardHeader>
+        <Card className="overflow-hidden">
+          <CardHeader className="pb-4">
             <div className="flex items-center gap-2 mb-2 flex-wrap">
               <Badge variant={isSeller ? "outline" : "default"}>{deal.side}</Badge>
-              <Badge variant="secondary">{pct}% complete</Badge>
             </div>
             <CardTitle className="font-display text-2xl">{deal.property_address ?? deal.client_name}</CardTitle>
             {(deal.list_price || deal.price) && (
@@ -163,9 +162,8 @@ export default function PortalDeal() {
               </p>
             )}
           </CardHeader>
-          <CardContent>
-            <Progress value={pct} className="mb-4" />
-            <StageProgress currentStage={displayStage} />
+          <CardContent className="border-t bg-muted/20 pt-5">
+            <StageProgress currentStage={displayStage} percent={pct} />
           </CardContent>
         </Card>
 
