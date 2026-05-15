@@ -153,8 +153,8 @@ export default function NewDeal() {
       price: price ? Number(price) : null,
       expected_close_date: expectedClose || null,
       notes: notes || null,
-      source_lead_type: inquiryId ? "property_inquiry" : "manual",
-      source_lead_id: inquiryId,
+      source_lead_type: inquiryId ? "property_inquiry" : buyerLeadId ? "buyer_lead" : "manual",
+      source_lead_id: inquiryId ?? buyerLeadId,
     }).select().single();
 
     if (error) {
@@ -169,6 +169,13 @@ export default function NewDeal() {
         .update({ status: "converted" })
         .eq("lead_type", "property_inquiry")
         .eq("lead_id", inquiryId);
+    }
+    if (buyerLeadId) {
+      await supabase.from("lead_assignments")
+        .update({ status: "converted" })
+        .eq("lead_type", "buyer_lead")
+        .eq("lead_id", buyerLeadId);
+      await supabase.from("buyer_leads").update({ status: "converted" }).eq("id", buyerLeadId);
     }
 
     toast.success("Deal created with checklist seeded");
