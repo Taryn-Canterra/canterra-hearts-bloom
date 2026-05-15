@@ -141,11 +141,6 @@ export const AddLeadDialog = ({ trigger, onCreated }: Props) => {
             <Label htmlFor="ld-financing" className="cursor-pointer text-sm font-normal">Needs financing referral</Label>
           </div>
 
-          <div className="flex items-start gap-3 rounded-lg border bg-background p-3">
-            <Checkbox id="ld-claim" checked={form.claim_to_self} onCheckedChange={(c) => update("claim_to_self", c === true)} className="mt-0.5" />
-            <Label htmlFor="ld-claim" className="cursor-pointer text-sm font-normal">Assign this lead to me</Label>
-          </div>
-
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
             <Button type="submit" disabled={saving}>{saving ? "Saving…" : "Add lead"}</Button>
