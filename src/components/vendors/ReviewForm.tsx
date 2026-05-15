@@ -59,6 +59,7 @@ export const ReviewForm = ({ vendorId, onSubmitted }: { vendorId: string; onSubm
     } else {
       const { error } = await supabase.from("vendor_reviews").insert({
         vendor_id: vendorId,
+        reviewer_id: user.id,
         reviewer_user_id: user.id,
         rating,
         body: body.trim() || null,
