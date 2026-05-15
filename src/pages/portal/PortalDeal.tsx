@@ -23,6 +23,7 @@ import { PostClosePanel } from "@/components/portal/PostClosePanel";
 import { ShowingRequestPanel } from "@/components/portal/ShowingRequestPanel";
 import { PropertyIntelligencePanel } from "@/components/portal/PropertyIntelligencePanel";
 import { HierarchicalChecklist } from "@/components/HierarchicalChecklist";
+import { ClientActionItems } from "@/components/portal/ClientActionItems";
 
 const STAGE_GROUPS = [
   { key: "new_lead", label: "New Lead" },
@@ -144,6 +145,9 @@ export default function PortalDeal() {
 
         {/* Urgent action banner */}
         <DeadlineBanner deal={deal} />
+
+        {/* Personal action items (only renders if any tasks are assigned to this client) */}
+        <ClientActionItems dealId={id!} />
 
         {/* Header */}
         <Card>

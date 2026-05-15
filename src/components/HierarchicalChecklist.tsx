@@ -8,9 +8,10 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { ChevronDown, ChevronRight, ExternalLink, Video, FileText, Link as LinkIcon, Check, Circle } from "lucide-react";
+import { ChevronDown, ChevronRight, ExternalLink, Video, FileText, Link as LinkIcon, Check, Circle, BellRing } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { PartyContactPopover } from "@/components/portal/PartyContactPopover";
 
 const STAGES = [
   { key: "new_lead", label: "New Lead" },
@@ -47,9 +48,7 @@ export const HierarchicalChecklist = ({ dealId, readOnly = false, clientVisibleO
   const load = async () => {
     const [{ data: ci }, { data: pa }] = await Promise.all([
       supabase.from("deal_checklist_items").select("*").eq("deal_id", dealId).order("sort_order"),
-      readOnly
-        ? Promise.resolve({ data: [] as any[] })
-        : supabase.from("deal_parties").select("*").eq("deal_id", dealId),
+      supabase.from("deal_parties").select("*").eq("deal_id", dealId),
     ]);
     setItems(ci ?? []);
     setParties(pa ?? []);
@@ -67,7 +66,10 @@ export const HierarchicalChecklist = ({ dealId, readOnly = false, clientVisibleO
   useEffect(() => { load(); }, [dealId]);
 
   const toggleItem = async (item: any) => {
-    if (readOnly) return;
+    // Allow client check-off when assigned to current user
+    const assignedParty = parties.find((p) => p.id === item.assigned_party_id);
+    const clientCanCheck = readOnly && assignedParty?.user_id === currentUserId;
+    if (readOnly && !clientCanCheck) return;
     const completed = !item.completed;
     const { error } = await supabase
       .from("deal_checklist_items")
@@ -150,17 +152,21 @@ export const HierarchicalChecklist = ({ dealId, readOnly = false, clientVisibleO
                       className="border rounded-md"
                     >
                       <div className="flex items-start gap-3 p-3">
-                        {readOnly ? (
-                          task.completed
-                            ? <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                            : <Circle className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-                        ) : (
-                          <Checkbox
-                            checked={task.completed}
-                            onCheckedChange={() => toggleItem(task)}
-                            className="mt-0.5"
-                          />
-                        )}
+                        {(() => {
+                          const clientCanCheck = readOnly && assignedParty?.user_id === currentUserId;
+                          if (readOnly && !clientCanCheck) {
+                            return task.completed
+                              ? <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                              : <Circle className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />;
+                          }
+                          return (
+                            <Checkbox
+                              checked={task.completed}
+                              onCheckedChange={() => toggleItem(task)}
+                              className="mt-0.5"
+                            />
+                          );
+                        })()}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start gap-2 flex-wrap">
                             <CollapsibleTrigger className="group flex items-center gap-1 text-left flex-1 min-w-0">
@@ -213,10 +219,27 @@ export const HierarchicalChecklist = ({ dealId, readOnly = false, clientVisibleO
                               </div>
                             </div>
                           )}
-                          {readOnly && assignedParty && (
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Assigned to: {assignedParty.name} ({assignedParty.role})
-                            </p>
+                          {readOnly && assignedParty && !assignedToMe && (
+                            <div className="flex items-center gap-2 flex-wrap mt-1.5 text-xs">
+                              <span className="text-muted-foreground">Responsible:</span>
+                              <PartyContactPopover party={assignedParty} dealId={dealId} taskLabel={task.label} />
+                              <span className="text-muted-foreground capitalize">({assignedParty.role.replace(/_/g, " ")})</span>
+                              {!task.completed && (
+                                <PartyContactPopover
+                                  party={assignedParty}
+                                  dealId={dealId}
+                                  taskLabel={task.label}
+                                  trigger={
+                                    <Button size="sm" variant="ghost" className="h-6 px-2 text-[11px]">
+                                      <BellRing className="h-3 w-3 mr-1" /> Request update
+                                    </Button>
+                                  }
+                                />
+                              )}
+                            </div>
+                          )}
+                          {readOnly && !assignedParty && (
+                            <p className="text-xs text-muted-foreground mt-1 italic">Handled by your agent</p>
                           )}
                         </div>
                       </div>
