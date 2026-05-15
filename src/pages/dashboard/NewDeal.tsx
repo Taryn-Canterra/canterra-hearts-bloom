@@ -107,6 +107,21 @@ export default function NewDeal() {
     })();
   }, [inquiryId]);
 
+  // Pre-fill from a manual buyer_lead if converting
+  useEffect(() => {
+    if (!buyerLeadId) return;
+    (async () => {
+      const { data: ld } = await supabase.from("buyer_leads").select("*").eq("id", buyerLeadId).maybeSingle();
+      if (ld) {
+        setClientName(ld.name);
+        setClientEmail(ld.email);
+        setClientPhone(ld.phone ?? "");
+        setNotes(ld.notes ?? "");
+        if (ld.max_price) setPrice(String(ld.max_price));
+      }
+    })();
+  }, [buyerLeadId]);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
