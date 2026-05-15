@@ -22,6 +22,7 @@ import { EsignPanel } from "@/components/portal/EsignPanel";
 import { PostClosePanel } from "@/components/portal/PostClosePanel";
 import { ShowingRequestPanel } from "@/components/portal/ShowingRequestPanel";
 import { PropertyIntelligencePanel } from "@/components/portal/PropertyIntelligencePanel";
+import { HierarchicalChecklist } from "@/components/HierarchicalChecklist";
 
 const STAGE_GROUPS = [
   { key: "new_lead", label: "New Lead" },
@@ -225,28 +226,10 @@ export default function PortalDeal() {
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Transaction checklist</CardTitle>
-            <p className="text-sm text-muted-foreground">Steps your agent is tracking on your behalf.</p>
+            <p className="text-sm text-muted-foreground">Steps your agent is tracking on your behalf. Expand a task for details and resources.</p>
           </CardHeader>
-          <CardContent className="space-y-5">
-            {STAGE_GROUPS.map((s) => {
-              const stageItems = items.filter((i) => i.stage === s.key);
-              if (stageItems.length === 0) return null;
-              return (
-                <div key={s.key}>
-                  <h4 className="font-medium text-sm uppercase tracking-wider text-primary mb-2">{s.label}</h4>
-                  <ul className="space-y-1.5">
-                    {stageItems.map((i) => (
-                      <li key={i.id} className="flex items-start gap-2 text-sm">
-                        {i.completed
-                          ? <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                          : <Circle className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />}
-                        <span className={i.completed ? "text-muted-foreground line-through" : ""}>{i.label}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
+          <CardContent>
+            <HierarchicalChecklist dealId={id!} readOnly clientVisibleOnly currentUserId={user?.id} />
           </CardContent>
         </Card>
 
