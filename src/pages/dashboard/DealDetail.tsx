@@ -97,12 +97,6 @@ export default function DealDetail() {
   if (loading) return <DashboardLayout><p>Loading…</p></DashboardLayout>;
   if (!deal) return <DashboardLayout><p>Deal not found.</p></DashboardLayout>;
 
-  // Group items by stage
-  const groupedItems = STAGES.map((s) => ({
-    stage: s,
-    items: items.filter((i) => i.stage === s.key),
-  })).filter((g) => g.items.length > 0);
-
   const totalItems = items.length;
   const completedItems = items.filter((i) => i.completed).length;
   const pct = totalItems ? Math.round((completedItems / totalItems) * 100) : 0;
