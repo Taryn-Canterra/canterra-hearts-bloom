@@ -58,7 +58,7 @@ export const AddLeadDialog = ({ trigger, onCreated }: Props) => {
 
     if (error || !lead) { setSaving(false); toast.error(error?.message ?? "Failed"); return; }
 
-    if (form.claim_to_self && user) {
+    if (user) {
       await supabase.from("lead_assignments").insert({
         lead_type: "buyer_lead", lead_id: lead.id, assigned_to: user.id, status: "new",
       });
