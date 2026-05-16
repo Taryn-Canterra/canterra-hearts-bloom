@@ -20,7 +20,7 @@ export function useCompletedDeadlineKeys(dealId?: string | null) {
     };
     load();
     const channel = supabase
-      .channel(`deadline-keys-${dealId}`)
+      .channel(`deadline-keys-${dealId}-${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "deal_checklist_items", filter: `deal_id=eq.${dealId}` }, load)
       .subscribe();
     return () => { active = false; supabase.removeChannel(channel); };
