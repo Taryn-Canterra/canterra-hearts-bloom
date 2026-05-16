@@ -74,6 +74,7 @@ const App = () => (
             <Route path="/portal/saved-vendors" element={<PortalSavedVendors />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </ErrorBoundary>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
