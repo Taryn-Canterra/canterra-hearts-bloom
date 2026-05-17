@@ -39,7 +39,7 @@ export interface SearchFilters {
 
 export const DEFAULT_FILTERS: SearchFilters = {
   location: "",
-  priceMin: 500_000,
+  priceMin: 0,
   priceMax: 5_000_000,
   acreageMin: 0,
   acreageMax: null,
