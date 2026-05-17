@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,8 +18,20 @@ export const Header = () => {
   const { user, isAgent, isAdmin, isClient, signOut } = useAuth();
   const [signInOpen, setSignInOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
   const dashboardHref = isAgent || isAdmin ? "/dashboard" : isClient ? "/portal" : "/dashboard";
   const dashboardLabel = isClient && !isAgent && !isAdmin ? "Client portal" : "Dashboard";
+
+  const scrollToSection = (id: string) => {
+    if (window.location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const signInOptions = [
     {
@@ -44,20 +56,18 @@ export const Header = () => {
 
   const mobileNavLinks = (
     <>
-      <a
-        href="#search"
-        onClick={() => setMobileOpen(false)}
-        className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
+      <button
+        onClick={() => { setMobileOpen(false); scrollToSection('search'); }}
+        className="text-left text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
       >
         Search
-      </a>
-      <a
-        href="#how"
-        onClick={() => setMobileOpen(false)}
-        className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
+      </button>
+      <button
+        onClick={() => { setMobileOpen(false); scrollToSection('how'); }}
+        className="text-left text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
       >
         How it works
-      </a>
+      </button>
       <Link
         to="/vendors"
         onClick={() => setMobileOpen(false)}
@@ -65,13 +75,12 @@ export const Header = () => {
       >
         Vendors
       </Link>
-      <a
-        href="#agents"
-        onClick={() => setMobileOpen(false)}
-        className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
+      <button
+        onClick={() => { setMobileOpen(false); scrollToSection('agents'); }}
+        className="text-left text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
       >
         For agents
-      </a>
+      </button>
     </>
   );
 
@@ -87,18 +96,18 @@ export const Header = () => {
           </span>
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-medium md:flex">
-          <a href="#search" className="text-foreground/80 transition-colors hover:text-primary">
+          <button onClick={() => scrollToSection('search')} className="text-foreground/80 transition-colors hover:text-primary">
             Search
-          </a>
-          <a href="#how" className="text-foreground/80 transition-colors hover:text-primary">
+          </button>
+          <button onClick={() => scrollToSection('how')} className="text-foreground/80 transition-colors hover:text-primary">
             How it works
-          </a>
+          </button>
           <Link to="/vendors" className="text-foreground/80 transition-colors hover:text-primary">
             Vendors
           </Link>
-          <a href="#agents" className="text-foreground/80 transition-colors hover:text-primary">
+          <button onClick={() => scrollToSection('agents')} className="text-foreground/80 transition-colors hover:text-primary">
             For agents
-          </a>
+          </button>
         </nav>
         <div className="flex items-center gap-2">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
