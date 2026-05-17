@@ -9,8 +9,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/useAuth";
-import { User, Briefcase, Store } from "lucide-react";
+import { User, Briefcase, Store, Menu } from "lucide-react";
 
 export const Header = () => {
   const { user, isAgent, isAdmin, isClient, signOut } = useAuth();
