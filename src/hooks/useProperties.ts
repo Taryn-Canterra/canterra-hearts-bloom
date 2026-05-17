@@ -42,7 +42,7 @@ interface PropertyRow {
 
 export const rowToListing = (row: PropertyRow): Listing => {
   // Use a stable fallback image from the mock set if the DB row has no photo
-  const fallback = LISTINGS[parseInt(row.id.slice(0, 1), 16) % LISTINGS.length];
+  const fallback = LISTINGS[0];
 
   return {
     id: row.id,
@@ -57,7 +57,7 @@ export const rowToListing = (row: PropertyRow): Listing => {
     sqft: Number(row.sqft ?? 0),
     stalls: row.stalls ?? 0,
     paddocks: row.paddocks ?? 0,
-    image: row.primary_photo ?? row.photos[0] ?? fallback.image,
+    image: (row.primary_photo || row.photos?.[0]) ?? fallback.image,
     gallery:
       row.photos && row.photos.length > 0
         ? row.photos
