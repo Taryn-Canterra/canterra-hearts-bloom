@@ -29,7 +29,7 @@ import {
 interface Props { resultCount: number }
 
 const formatPrice = (n: number) =>
-  n >= 1_000_000 ? `$${(n / 1_000_000).toFixed(2)}M` : `$${(n / 1000).toFixed(0)}K`;
+  n === 0 ? 'Any' : n >= 1_000_000 ? `$${(n / 1_000_000).toFixed(2)}M` : `$${(n / 1000).toFixed(0)}K`;
 
 export const FilterSidebar = ({ resultCount }: Props) => {
   const filters = useSearchFilters();
@@ -90,7 +90,7 @@ export const FilterSidebar = ({ resultCount }: Props) => {
         <Slider
           value={[filters.priceMin, filters.priceMax]}
           onValueChange={([min, max]) => searchFiltersStore.set({ priceMin: min, priceMax: max })}
-          min={250_000}
+          min={0}
           max={10_000_000}
           step={50_000}
         />
